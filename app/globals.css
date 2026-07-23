@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-stone: var(--stone);
+  --color-mist: var(--mist);
+  --color-ash: var(--ash);
+  --color-paper: var(--paper);
+  --color-seal: var(--seal);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-line: var(--line);
+
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --ink: #0e0e0d;
+  --stone: #2a2a27;
+  --mist: #6b6b64;
+  --ash: #c9c5b8;
+  --paper: #f2efe6;
+  --seal: #8c2f27;
+
+  --bg: var(--paper);
+  --surface: #e9e5d9;
+  --fg: var(--ink);
+  --fg-muted: var(--stone);
+  --fg-subtle: var(--mist);
+  --line: rgba(14, 14, 13, 0.14);
+}
+
+.dark {
+  --bg: var(--ink);
+  --surface: #171716;
+  --fg: var(--paper);
+  --fg-muted: var(--ash);
+  --fg-subtle: var(--mist);
+  --line: rgba(242, 239, 230, 0.14);
+  --seal: #b8453a;
+}
+
+@layer base {
+  html {
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+
+  body {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 600ms var(--ease-settle),
+                color 600ms var(--ease-settle);
+  }
+
+  ::selection {
+    background-color: var(--seal);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--seal);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
