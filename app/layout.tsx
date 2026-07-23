@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import CustomCursor from "@/components/motion/CustomCursor";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <CustomCursor />
         <SmoothScroll>
           <Nav />
           <main id="main">{children}</main>

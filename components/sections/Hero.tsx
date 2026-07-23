@@ -4,6 +4,10 @@ import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
 import ParallaxLayer from "@/components/motion/ParallaxLayer";
+import MistTexture from "@/components/motion/MistTexture";
+import MaskText from "@/components/motion/MaskText";
+import InkParticles from "@/components/motion/InkParticles";
+import InkFigure from "@/components/motion/InkFigure";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -15,7 +19,7 @@ export default function Hero() {
     reduced
       ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay } }
       : {
-          initial: { opacity: 0, y: 24 },
+          initial: { opacity: 0, y: 22 },
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.9, delay, ease: EASE },
         };
@@ -26,78 +30,105 @@ export default function Hero() {
       data-parallax-scene
       className="relative flex min-h-[100svh] items-center overflow-hidden"
     >
-      {/* Atmosphere — three depth layers behind the content. */}
+      {/* Atmosphere */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        {/* Far mist + pale disc (slowest) */}
+        {/* Far: mist wash + pale disc + fractal haze (slowest) */}
         <ParallaxLayer speed={0.2} className="absolute inset-0" aria-hidden>
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(58% 46% at 50% 26%, color-mix(in srgb, var(--mist) 16%, transparent), transparent 72%)",
+                "radial-gradient(62% 48% at 62% 24%, color-mix(in srgb, var(--ash) 22%, transparent), transparent 70%)",
             }}
           />
           <div
-            className="absolute left-1/2 top-[16%] h-40 w-40 -translate-x-1/2 rounded-full sm:h-56 sm:w-56"
+            className="absolute right-[16%] top-[14%] h-44 w-44 rounded-full sm:h-64 sm:w-64"
             style={{
               background:
-                "radial-gradient(circle, color-mix(in srgb, var(--ash) 34%, transparent), transparent 68%)",
+                "radial-gradient(circle, color-mix(in srgb, var(--ash) 38%, transparent), transparent 66%)",
             }}
           />
+          <MistTexture seed={4} opacity={0.45} className="absolute inset-0 h-full w-full" />
         </ParallaxLayer>
 
-        {/* Distant mountain range (mid) */}
-        <ParallaxLayer speed={0.5} className="absolute inset-x-0 bottom-0 h-[62%]" aria-hidden>
-          <Ridge variant="far" />
+        {/* Mid: mountains */}
+        <ParallaxLayer speed={0.5} className="absolute inset-x-0 bottom-0 h-[82%]" aria-hidden>
+          <Mountains />
         </ParallaxLayer>
 
-        {/* Near ridge (moves closer to content speed) */}
-        <ParallaxLayer speed={0.72} className="absolute inset-x-0 bottom-0 h-[42%]" aria-hidden>
-          <Ridge variant="near" />
+        {/* Mid mist band weaving through the range */}
+        <ParallaxLayer speed={0.62} className="absolute inset-x-0 bottom-[10%] h-[52%]" aria-hidden>
+          <MistTexture seed={9} frequency="0.012 0.022" opacity={0.4} className="h-full w-full" />
         </ParallaxLayer>
 
-        {/* Base fade so content sits clear of the mist */}
+        {/* Near: lone figure emerging from the mist (faint on mobile, full on sm+) */}
+        <ParallaxLayer
+          speed={0.8}
+          className="absolute bottom-[9%] right-[3%] h-[40%] w-[46%] max-w-[200px] opacity-40 sm:bottom-[10%] sm:right-[11%] sm:h-[54%] sm:w-[38%] sm:max-w-[290px] sm:opacity-100"
+          aria-hidden
+        >
+          <div
+            className="mx-auto h-full w-full"
+            style={{
+              maskImage: "linear-gradient(to bottom, #000 76%, transparent 98%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 76%, transparent 98%)",
+            }}
+          >
+            <InkFigure className="mx-auto block h-full w-auto text-fg" />
+          </div>
+        </ParallaxLayer>
+
+        {/* Foreground mist veil at the base */}
+        <ParallaxLayer speed={0.92} className="absolute inset-x-0 bottom-0 h-[28%]" aria-hidden>
+          <MistTexture seed={15} frequency="0.014 0.03" opacity={0.5} className="h-full w-full" />
+        </ParallaxLayer>
+
+        {/* Drifting ink flecks */}
+        <InkParticles className="absolute inset-0" />
+
+        {/* Legibility fade toward the text side */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--bg) 55%, transparent))",
+              "linear-gradient(105deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, color-mix(in srgb, var(--bg) 30%, transparent) 42%, transparent 68%)",
           }}
         />
       </div>
 
-      {/* Content (foreground, 1.0) */}
-      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
-        <div className="max-w-3xl">
+      {/* Content */}
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <div className="max-w-2xl">
           <motion.p
             {...rise(0.05)}
-            className="font-mono text-[0.7rem] uppercase tracking-[0.32em] text-fg-subtle"
+            className="font-mono text-[0.7rem] uppercase tracking-[0.34em] text-fg-subtle"
           >
             {profile.location}
           </motion.p>
 
-          <motion.h1
-            {...rise(0.15)}
-            className="mt-5 font-display text-[3.25rem] font-light leading-[0.98] tracking-tight text-fg sm:text-7xl lg:text-8xl"
-          >
-            {profile.shortName}
-          </motion.h1>
+          <MaskText
+            as="h1"
+            lines={["John Peter", "Pestaño"]}
+            delay={0.15}
+            stagger={0.11}
+            className="mt-5 font-display text-[3.5rem] font-light leading-[0.94] tracking-tight text-fg sm:text-8xl lg:text-[8.5rem]"
+          />
 
           <motion.p
-            {...rise(0.3)}
-            className="mt-7 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl"
+            {...rise(0.5)}
+            className="mt-8 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl"
           >
             {profile.positioning}
           </motion.p>
 
-          <motion.div {...rise(0.45)} className="mt-8 flex items-center gap-3">
+          <motion.div {...rise(0.65)} className="mt-8 flex items-center gap-3">
             <span className="h-1.5 w-1.5 rounded-full bg-seal" aria-hidden="true" />
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-fg-subtle">
               {profile.availability}
             </span>
           </motion.div>
 
-          <motion.div {...rise(0.6)} className="mt-11 flex flex-wrap items-center gap-4">
+          <motion.div {...rise(0.8)} className="mt-11 flex flex-wrap items-center gap-5">
             <button
               type="button"
               onClick={() => scrollTo("#contact", { offset: -72 })}
@@ -125,7 +156,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.1 }}
+        transition={{ duration: 1, delay: 1.3 }}
         className="pointer-events-none absolute inset-x-0 bottom-8 flex justify-center"
         aria-hidden="true"
       >
@@ -137,29 +168,36 @@ export default function Hero() {
   );
 }
 
-function Ridge({ variant }: { variant: "far" | "near" }) {
-  const far = variant === "far";
+/** Distant range + a dramatic jagged peak to the right. Uses the mist token so
+ *  it reads on both paper and ink. */
+function Mountains() {
   return (
     <svg
-      viewBox="0 0 1440 320"
-      preserveAspectRatio="none"
+      viewBox="0 0 1440 600"
+      preserveAspectRatio="xMidYMax slice"
       className="h-full w-full"
       style={{ color: "var(--mist)" }}
       aria-hidden="true"
     >
-      {far ? (
-        <path
-          d="M0,220 C160,150 300,120 440,150 C600,184 720,120 880,132 C1040,144 1180,196 1440,150 L1440,320 L0,320 Z"
-          fill="currentColor"
-          fillOpacity="0.16"
-        />
-      ) : (
-        <path
-          d="M0,270 C180,210 320,244 480,224 C640,204 760,258 920,250 C1090,242 1240,290 1440,246 L1440,320 L0,320 Z"
-          fill="currentColor"
-          fillOpacity="0.28"
-        />
-      )}
+      {/* distant soft range */}
+      <path
+        d="M0,360 C200,300 360,320 540,300 C760,276 900,340 1120,300 C1280,272 1360,320 1440,300 L1440,600 L0,600 Z"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      {/* main jagged peak, right */}
+      <path
+        d="M760,600 L980,280 L1040,360 L1150,120 L1210,250 L1270,180 L1440,440 L1440,600 Z"
+        fill="currentColor"
+        fillOpacity="0.24"
+      />
+      {/* nearer foothill left */}
+      <path
+        d="M0,600 L0,440 C120,400 240,430 360,470 C500,516 560,470 700,510 L760,600 Z"
+        fill="currentColor"
+        fillOpacity="0.2"
+      />
     </svg>
   );
 }
+

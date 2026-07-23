@@ -25,28 +25,29 @@
 }
 
 :root {
-  --ink: #0e0e0d;
-  --stone: #2a2a27;
-  --mist: #6b6b64;
-  --ash: #c9c5b8;
-  --paper: #f2efe6;
+  /* Cool-grey, dusk/desolate ink-wash palette. */
+  --ink: #0d0e11;
+  --stone: #23262b;
+  --mist: #676c73;
+  --ash: #c2c7cd;
+  --paper: #e8eaed;
   --seal: #8c2f27;
 
   --bg: var(--paper);
-  --surface: #e9e5d9;
+  --surface: #dde0e4;
   --fg: var(--ink);
   --fg-muted: var(--stone);
   --fg-subtle: var(--mist);
-  --line: rgba(14, 14, 13, 0.14);
+  --line: rgba(13, 14, 17, 0.14);
 }
 
 .dark {
   --bg: var(--ink);
-  --surface: #171716;
+  --surface: #15171b;
   --fg: var(--paper);
   --fg-muted: var(--ash);
   --fg-subtle: var(--mist);
-  --line: rgba(242, 239, 230, 0.14);
+  --line: rgba(232, 234, 237, 0.14);
   --seal: #b8453a;
 }
 
@@ -84,3 +85,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Custom ink cursor. The `cursor-custom` class is only added by JS on
+   fine-pointer, motion-allowing devices, so the native cursor is the default
+   and returns if JS fails. */
+@media (hover: hover) and (pointer: fine) {
+  html.cursor-custom,
+  html.cursor-custom * {
+    cursor: none;
+  }
+}
+
