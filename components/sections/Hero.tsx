@@ -4,9 +4,9 @@ import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
 import ParallaxLayer from "@/components/motion/ParallaxLayer";
-import MistTexture from "@/components/motion/MistTexture";
 import MaskText from "@/components/motion/MaskText";
 import InkParticles from "@/components/motion/InkParticles";
+import InkFlowCanvas from "@/components/motion/InkFlowCanvas";
 import InkFigure from "@/components/motion/InkFigure";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -30,68 +30,37 @@ export default function Hero() {
       data-parallax-scene
       className="relative flex min-h-[100svh] items-center overflow-hidden"
     >
-      {/* Atmosphere */}
+      {/* Living ink-wash landscape */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        {/* Far: mist wash + pale disc + fractal haze (slowest) */}
-        <ParallaxLayer speed={0.2} className="absolute inset-0" aria-hidden>
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(62% 48% at 62% 24%, color-mix(in srgb, var(--ash) 22%, transparent), transparent 70%)",
-            }}
-          />
-          <div
-            className="absolute right-[16%] top-[14%] h-44 w-44 rounded-full sm:h-64 sm:w-64"
-            style={{
-              background:
-                "radial-gradient(circle, color-mix(in srgb, var(--ash) 38%, transparent), transparent 66%)",
-            }}
-          />
-          <MistTexture seed={4} opacity={0.45} className="absolute inset-0 h-full w-full" />
-        </ParallaxLayer>
+        {/* Flowing ink, rendered on the GPU */}
+        <InkFlowCanvas className="absolute inset-0 h-full w-full" />
 
-        {/* Mid: mountains */}
-        <ParallaxLayer speed={0.5} className="absolute inset-x-0 bottom-0 h-[82%]" aria-hidden>
-          <Mountains />
-        </ParallaxLayer>
-
-        {/* Mid mist band weaving through the range */}
-        <ParallaxLayer speed={0.62} className="absolute inset-x-0 bottom-[10%] h-[52%]" aria-hidden>
-          <MistTexture seed={9} frequency="0.012 0.022" opacity={0.4} className="h-full w-full" />
-        </ParallaxLayer>
-
-        {/* Near: lone figure emerging from the mist (faint on mobile, full on sm+) */}
+        {/* Lone figure, emerging from the mist (faint on mobile, full on sm+) */}
         <ParallaxLayer
-          speed={0.8}
+          speed={0.82}
           className="absolute bottom-[9%] right-[3%] h-[40%] w-[46%] max-w-[200px] opacity-40 sm:bottom-[10%] sm:right-[11%] sm:h-[54%] sm:w-[38%] sm:max-w-[290px] sm:opacity-100"
           aria-hidden
         >
           <div
             className="mx-auto h-full w-full"
             style={{
-              maskImage: "linear-gradient(to bottom, #000 76%, transparent 98%)",
-              WebkitMaskImage: "linear-gradient(to bottom, #000 76%, transparent 98%)",
+              maskImage: "linear-gradient(to bottom, #000 74%, transparent 98%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 74%, transparent 98%)",
             }}
           >
             <InkFigure className="mx-auto block h-full w-auto text-fg" />
           </div>
         </ParallaxLayer>
 
-        {/* Foreground mist veil at the base */}
-        <ParallaxLayer speed={0.92} className="absolute inset-x-0 bottom-0 h-[28%]" aria-hidden>
-          <MistTexture seed={15} frequency="0.014 0.03" opacity={0.5} className="h-full w-full" />
-        </ParallaxLayer>
-
-        {/* Drifting ink flecks */}
+        {/* Fine drifting flecks for foreground texture */}
         <InkParticles className="absolute inset-0" />
 
-        {/* Legibility fade toward the text side */}
+        {/* Legibility wash beneath the text */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(105deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, color-mix(in srgb, var(--bg) 30%, transparent) 42%, transparent 68%)",
+              "linear-gradient(102deg, color-mix(in srgb, var(--bg) 78%, transparent) 0%, color-mix(in srgb, var(--bg) 34%, transparent) 44%, transparent 66%)",
           }}
         />
       </div>
@@ -167,37 +136,3 @@ export default function Hero() {
     </section>
   );
 }
-
-/** Distant range + a dramatic jagged peak to the right. Uses the mist token so
- *  it reads on both paper and ink. */
-function Mountains() {
-  return (
-    <svg
-      viewBox="0 0 1440 600"
-      preserveAspectRatio="xMidYMax slice"
-      className="h-full w-full"
-      style={{ color: "var(--mist)" }}
-      aria-hidden="true"
-    >
-      {/* distant soft range */}
-      <path
-        d="M0,360 C200,300 360,320 540,300 C760,276 900,340 1120,300 C1280,272 1360,320 1440,300 L1440,600 L0,600 Z"
-        fill="currentColor"
-        fillOpacity="0.12"
-      />
-      {/* main jagged peak, right */}
-      <path
-        d="M760,600 L980,280 L1040,360 L1150,120 L1210,250 L1270,180 L1440,440 L1440,600 Z"
-        fill="currentColor"
-        fillOpacity="0.24"
-      />
-      {/* nearer foothill left */}
-      <path
-        d="M0,600 L0,440 C120,400 240,430 360,470 C500,516 560,470 700,510 L760,600 Z"
-        fill="currentColor"
-        fillOpacity="0.2"
-      />
-    </svg>
-  );
-}
-
