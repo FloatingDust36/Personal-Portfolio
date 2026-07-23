@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/components/providers/SmoothScroll";
+import Nav from "@/components/layout/Nav";
+import Footer from "@/components/layout/Footer";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -54,7 +57,19 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-seal focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:text-paper"
+        >
+          Skip to content
+        </a>
+        <SmoothScroll>
+          <Nav />
+          <main id="main">{children}</main>
+          <Footer />
+        </SmoothScroll>
+      </body>
     </html>
   );
 }
