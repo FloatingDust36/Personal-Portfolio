@@ -13,6 +13,10 @@ export const profile = {
     "Computer Engineering student building AI systems that ship — agentic tool-calling, retrieval pipelines, and the backends that hold them together.",
   availability: "Open to part-time, remote roles.",
 
+  // Set to "/resume.pdf" once the updated PDF is in /public. While empty the
+  // download button is omitted rather than shipped as a dead link.
+  resumeUrl: "",
+
   email: "johnpeter.diongzon.pestano@gmail.com",
   phone: "(+63) 960 672 8563",
   github: "https://github.com/FloatingDust36",

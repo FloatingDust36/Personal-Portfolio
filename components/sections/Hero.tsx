@@ -90,18 +90,20 @@ export default function Hero() {
             >
               Speak with Dusk
             </button>
-            <a
-              href="/resume.pdf"
-              className="group inline-flex items-center gap-2 py-3 font-mono text-xs uppercase tracking-[0.16em] text-fg-muted transition-colors duration-300 hover:text-fg"
-            >
-              Résumé
-              <span
-                className="inline-block transition-transform duration-500 ease-[var(--ease-settle)] group-hover:translate-y-0.5"
-                aria-hidden="true"
+            {profile.resumeUrl && (
+              <a
+                href={profile.resumeUrl}
+                className="group inline-flex items-center gap-2 py-3 font-mono text-xs uppercase tracking-[0.16em] text-fg-muted transition-colors duration-300 hover:text-fg"
               >
-                ↓
-              </span>
-            </a>
+                Résumé
+                <span
+                  className="inline-block transition-transform duration-500 ease-[var(--ease-settle)] group-hover:translate-y-0.5"
+                  aria-hidden="true"
+                >
+                  ↓
+                </span>
+              </a>
+            )}
           </div>
         </div>
       </div>
