@@ -1,35 +1,26 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
-import MaskText from "@/components/motion/MaskText";
+// Imported statically (not lazily) so the artwork ships in the initial HTML
+// and the browser can preload it — this is the largest paint on the page.
+import HeroMedia from "@/components/sections/HeroMedia";
 import { heroMedia } from "@/content/heroMedia";
 
-// The 3D scene is heavy and WebGL-only — load it client-side, after the text.
+// The 3D scene is WebGL-only, so it cannot be server-rendered.
 const HeroScene = dynamic(() => import("@/components/hero3d/HeroScene"), {
   ssr: false,
 });
-// A supplied ink-wash video/image takes over once enabled in content/heroMedia.
-const HeroMedia = dynamic(() => import("@/components/sections/HeroMedia"), {
-  ssr: false,
-});
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
   const scrollTo = useSmoothScrollTo();
-  const reduced = useReducedMotion();
 
-  const rise = (delay: number) =>
-    reduced
-      ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay } }
-      : {
-          initial: { opacity: 0, y: 22 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.9, delay, ease: EASE },
-        };
+  /** CSS-driven entrance — paints without waiting for hydration. */
+  const rise = (delay: number, className = "") => ({
+    className: `hero-rise ${className}`.trim(),
+    style: { animationDelay: `${delay}s` },
+  });
 
   return (
     <section
@@ -52,36 +43,40 @@ export default function Hero() {
       {/* Content */}
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         <div className="max-w-2xl">
-          <motion.p
-            {...rise(0.05)}
-            className="font-mono text-[0.7rem] uppercase tracking-[0.34em] text-fg-subtle"
+          <p
+            {...rise(0.05, "font-mono text-[0.7rem] uppercase tracking-[0.34em] text-fg-subtle")}
           >
             {profile.location}
-          </motion.p>
+          </p>
 
-          <MaskText
-            as="h1"
-            lines={["John Peter", "Pestaño"]}
-            delay={0.15}
-            stagger={0.11}
-            className="mt-5 font-display text-[3.5rem] font-light leading-[0.94] tracking-tight text-fg sm:text-8xl lg:text-[8.5rem]"
-          />
+          {/* Masked line reveal, in CSS so the name paints without hydration. */}
+          <h1 className="mt-5 font-display text-[3.5rem] font-light leading-[0.94] tracking-tight text-fg sm:text-8xl lg:text-[8.5rem]">
+            {["John Peter", "Pestaño"].map((line, i) => (
+              <span key={line} className="block overflow-hidden pb-[0.08em]">
+                <span
+                  className="hero-line block"
+                  style={{ animationDelay: `${0.08 + i * 0.1}s` }}
+                >
+                  {line}
+                </span>
+              </span>
+            ))}
+          </h1>
 
-          <motion.p
-            {...rise(0.5)}
-            className="mt-8 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl"
+          <p
+            {...rise(0.22, "mt-8 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl")}
           >
             {profile.positioning}
-          </motion.p>
+          </p>
 
-          <motion.div {...rise(0.65)} className="mt-8 flex items-center gap-3">
+          <div {...rise(0.34, "mt-8 flex items-center gap-3")}>
             <span className="h-1.5 w-1.5 rounded-full bg-seal" aria-hidden="true" />
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-fg-subtle">
               {profile.availability}
             </span>
-          </motion.div>
+          </div>
 
-          <motion.div {...rise(0.8)} className="mt-11 flex flex-wrap items-center gap-5">
+          <div {...rise(0.46, "mt-11 flex flex-wrap items-center gap-5")}>
             <button
               type="button"
               onClick={() => {
@@ -107,22 +102,19 @@ export default function Hero() {
                 ↓
               </span>
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.3 }}
-        className="pointer-events-none absolute inset-x-0 bottom-8 flex justify-center"
+      <div
+        {...rise(0.7, "pointer-events-none absolute inset-x-0 bottom-8 flex justify-center")}
         aria-hidden="true"
       >
         <span className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-fg-subtle">
           Scroll
         </span>
-      </motion.div>
+      </div>
     </section>
   );
 }

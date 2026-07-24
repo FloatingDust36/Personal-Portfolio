@@ -37,7 +37,9 @@
   --surface: #dde0e4;
   --fg: var(--ink);
   --fg-muted: var(--stone);
-  --fg-subtle: var(--mist);
+  /* Darker than --mist so small subtle text clears WCAG AA (4.5:1) on paper.
+     --mist stays reserved for atmosphere, which has no contrast duty. */
+  --fg-subtle: #5f646b;
   --line: rgba(13, 14, 17, 0.14);
 }
 
@@ -46,7 +48,8 @@
   --surface: #15171b;
   --fg: var(--paper);
   --fg-muted: var(--ash);
-  --fg-subtle: var(--mist);
+  /* Lighter than --mist so the same subtle text clears AA on ink. */
+  --fg-subtle: #7f848c;
   --line: rgba(232, 234, 237, 0.14);
   --seal: #b8453a;
 }
@@ -73,6 +76,40 @@
     outline: 2px solid var(--seal);
     outline-offset: 3px;
   }
+}
+
+/* Hero copy entrance. Deliberately CSS rather than JS: the browser can run
+   this at first paint instead of waiting for hydration, which keeps the
+   largest paint early. Reduced motion neutralises it below. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 700ms var(--ease-settle) both;
+}
+
+/* Masked line reveal for the name — each line rises from behind a clip. */
+@keyframes hero-line {
+  from {
+    opacity: 0;
+    transform: translateY(105%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-line {
+  animation: hero-line 850ms var(--ease-settle) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
