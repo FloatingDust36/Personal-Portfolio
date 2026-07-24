@@ -5,9 +5,14 @@ import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
 import MaskText from "@/components/motion/MaskText";
+import { heroMedia } from "@/content/heroMedia";
 
 // The 3D scene is heavy and WebGL-only — load it client-side, after the text.
 const HeroScene = dynamic(() => import("@/components/hero3d/HeroScene"), {
+  ssr: false,
+});
+// A supplied ink-wash video/image takes over once enabled in content/heroMedia.
+const HeroMedia = dynamic(() => import("@/components/sections/HeroMedia"), {
   ssr: false,
 });
 
@@ -31,9 +36,9 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-[100svh] items-center overflow-hidden"
     >
-      {/* Living 3D ink-wash landscape */}
+      {/* Ink-wash backdrop: supplied media when enabled, else the 3D scene */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        <HeroScene />
+        {heroMedia.enabled ? <HeroMedia /> : <HeroScene />}
         {/* Legibility wash beneath the text */}
         <div
           className="absolute inset-0"
