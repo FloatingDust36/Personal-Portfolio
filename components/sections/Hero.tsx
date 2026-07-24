@@ -84,7 +84,13 @@ export default function Hero() {
           <motion.div {...rise(0.8)} className="mt-11 flex flex-wrap items-center gap-5">
             <button
               type="button"
-              onClick={() => scrollTo("#contact", { offset: -72 })}
+              onClick={() => {
+                scrollTo("#contact", { offset: -72 });
+                // Land the caret in Dusk once the scroll has settled.
+                window.setTimeout(() => {
+                  document.getElementById("dusk-input")?.focus({ preventScroll: true });
+                }, 900);
+              }}
               className="rounded-full bg-seal px-7 py-3 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-opacity duration-500 ease-[var(--ease-settle)] hover:opacity-90"
             >
               Speak with Dusk
