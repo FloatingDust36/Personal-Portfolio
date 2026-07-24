@@ -77,9 +77,11 @@ function parseMessages(body: unknown): ChatMsg[] | null {
 async function generate(system: string, messages: ChatMsg[]): Promise<string | null> {
   const orKey = process.env.OPENROUTER_API_KEY;
   const gemKey = process.env.GEMINI_API_KEY;
+  // Free model slugs on OpenRouter churn often — override with the
+  // OPENROUTER_MODELS env var (comma-separated) without a redeploy if these die.
   const orModels = (
     process.env.OPENROUTER_MODELS ??
-    "meta-llama/llama-3.3-70b-instruct:free,google/gemma-2-9b-it:free"
+    "google/gemma-4-26b-a4b-it:free,google/gemma-4-31b-it:free,openai/gpt-oss-20b:free"
   )
     .split(",")
     .map((s) => s.trim())
