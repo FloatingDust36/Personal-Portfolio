@@ -1,0 +1,98 @@
+// Dusk's knowledge context is assembled from the SAME typed content the page
+// renders from, so the assistant and the site can never contradict each other.
+// Nothing here is hand-written background — it is a serialization of §6 content.
+
+import { profile } from "@/content/profile";
+import { experience } from "@/content/experience";
+import { education } from "@/content/education";
+import { groupA, groupB, groupMore } from "@/content/projects";
+import { skillTiers, currentlyLearning } from "@/content/skills";
+import {
+  competitions,
+  scholarship,
+  academicHonors,
+  certifications,
+  certsInProgress,
+} from "@/content/awards";
+
+export function buildKnowledgeContext(): string {
+  const lines: string[] = [];
+
+  lines.push("# John Peter D. Pestaño — knowledge base");
+  lines.push(
+    `Location: ${profile.location}. Email: ${profile.email}. GitHub: ${profile.githubHandle}. LinkedIn available.`,
+  );
+  lines.push(`Positioning: ${profile.positioning}`);
+  lines.push(`Availability: ${profile.availability}`);
+
+  lines.push("\n## Education / progression");
+  lines.push(education.lead);
+  for (const m of education.milestones) {
+    lines.push(
+      `- ${m.credential}${m.period ? ` (${m.period})` : ""} — ${m.place}. ${m.detail ?? ""}`.trim(),
+    );
+  }
+
+  lines.push("\n## Experience");
+  for (const e of experience) {
+    lines.push(`### ${e.org} — ${e.role} (${e.period}, ${e.location})`);
+    lines.push(e.summary);
+    if (e.note) lines.push(`Note: ${e.note}`);
+  }
+
+  lines.push("\n## Projects — Lifewood internship systems (repositories not public)");
+  for (const p of groupA) lines.push(projectLine(p));
+
+  lines.push("\n## Projects — personal & academic");
+  for (const p of groupB) lines.push(projectLine(p));
+  lines.push(
+    "Smaller builds: " +
+      groupMore.map((m) => `${m.title} (${m.stack}, ${m.note})`).join("; "),
+  );
+
+  lines.push("\n## Skills — by honest proficiency tier");
+  for (const t of skillTiers) {
+    lines.push(`${t.name} (${t.blurb}): ${t.items.join(", ")}.`);
+  }
+  lines.push(
+    `${currentlyLearning.label} (not yet used in a shipped project): ${currentlyLearning.items.join(", ")}.`,
+  );
+
+  lines.push("\n## Awards & credentials");
+  lines.push(
+    "Competitions: " +
+      competitions.map((c) => `${c.title} — ${c.detail} (${c.year})`).join("; "),
+  );
+  lines.push(
+    "Scholarship: " +
+      scholarship.map((s) => `${s.title} — ${s.detail} (${s.year})`).join("; "),
+  );
+  lines.push("Academic: " + academicHonors.join("; "));
+  lines.push(
+    "Certifications (completed): " +
+      certifications.map((c) => c.name + (c.when ? ` (${c.when})` : "")).join("; "),
+  );
+  lines.push("Certifications (in progress): " + certsInProgress.join("; "));
+
+  return lines.join("\n");
+}
+
+function projectLine(p: {
+  title: string;
+  role: string;
+  stack: string[];
+  blurb: string;
+  note?: string;
+  repo?: string;
+}): string {
+  return [
+    `### ${p.title}`,
+    `Role: ${p.role}`,
+    `Stack: ${p.stack.join(", ")}.`,
+    p.blurb,
+    p.note ? `Note: ${p.note}` : "",
+    p.repo ? `Repo: ${p.repo}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
