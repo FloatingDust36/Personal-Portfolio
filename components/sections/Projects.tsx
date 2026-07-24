@@ -1,5 +1,6 @@
 import { groupA, groupB, groupMore } from "@/content/projects";
 import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
 import ProjectCard from "@/components/ui/ProjectCard";
 
 export default function Projects() {
@@ -13,10 +14,14 @@ export default function Projects() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
             Projects
           </p>
-          <h2 className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl">
-            Systems built to ship.
-          </h2>
         </Reveal>
+        <SplitReveal
+          as="h2"
+          type="lines"
+          className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl"
+        >
+          Systems built to ship.
+        </SplitReveal>
 
         {/* Group A — internship systems */}
         <Reveal>

@@ -1,5 +1,6 @@
 import { education } from "@/content/education";
 import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
 
 export default function About() {
   return (
@@ -15,9 +16,15 @@ export default function About() {
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
                 About
               </p>
-              <h2 className="mt-5 font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl">
-                A decade of advanced tracks.
-              </h2>
+            </Reveal>
+            <SplitReveal
+              as="h2"
+              type="lines"
+              className="mt-5 font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl"
+            >
+              A decade of advanced tracks.
+            </SplitReveal>
+            <Reveal delay={0.1}>
               <p className="mt-6 max-w-md leading-relaxed text-fg-muted">
                 {education.lead}
               </p>

@@ -1,5 +1,6 @@
 import { skillTiers, currentlyLearning } from "@/content/skills";
 import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
 
 export default function Skills() {
   return (
@@ -12,10 +13,14 @@ export default function Skills() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
             Skills
           </p>
-          <h2 className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl">
-            Honest about the depth.
-          </h2>
         </Reveal>
+        <SplitReveal
+          as="h2"
+          type="lines"
+          className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl"
+        >
+          Honest about the depth.
+        </SplitReveal>
 
         <div className="mt-14 space-y-px">
           {skillTiers.map((tier) => (

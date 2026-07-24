@@ -6,6 +6,7 @@ import {
   certsInProgress,
 } from "@/content/awards";
 import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
 
 export default function Awards() {
   return (
@@ -18,10 +19,14 @@ export default function Awards() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
             Awards
           </p>
-          <h2 className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl">
-            Recognition &amp; credentials.
-          </h2>
         </Reveal>
+        <SplitReveal
+          as="h2"
+          type="lines"
+          className="mt-5 max-w-2xl font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl"
+        >
+          Recognition &amp; credentials.
+        </SplitReveal>
 
         {/* Competitions — lead; live-contest proof sits first */}
         <Reveal>

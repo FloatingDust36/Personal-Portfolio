@@ -13,6 +13,7 @@ export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
   const [active, setActive] = useState(false); // over an interactive target
   const [visible, setVisible] = useState(false);
+  const [label, setLabel] = useState(""); // contextual label from [data-cursor]
 
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
@@ -34,7 +35,9 @@ export default function CustomCursor() {
       y.set(e.clientY);
       setVisible(true);
       const target = e.target as Element | null;
-      setActive(!!target?.closest("a, button, [data-cursor='link'], input, textarea"));
+      const labelled = target?.closest("[data-cursor]");
+      setLabel(labelled?.getAttribute("data-cursor") ?? "");
+      setActive(!!labelled || !!target?.closest("a, button, input, textarea"));
     };
     const leave = () => setVisible(false);
 
@@ -57,15 +60,23 @@ export default function CustomCursor() {
       style={{ opacity: visible ? 1 : 0, transition: "opacity 300ms" }}
     >
       <motion.div
-        className="absolute -ml-4 -mt-4 h-8 w-8 rounded-full border border-fg-subtle"
+        className="absolute -ml-4 -mt-4 grid h-8 w-8 place-items-center rounded-full border border-fg-subtle"
         style={{
           x: ringX,
           y: ringY,
-          scale: active ? 1.9 : 1,
+          scale: label ? 3.4 : active ? 1.9 : 1,
           opacity: active ? 0.5 : 0.35,
+          backgroundColor: label ? "color-mix(in srgb, var(--seal) 88%, transparent)" : "transparent",
+          borderColor: label ? "transparent" : "var(--fg-subtle)",
         }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      />
+      >
+        {label && (
+          <span className="font-mono text-[0.32rem] uppercase tracking-[0.12em] text-paper">
+            {label}
+          </span>
+        )}
+      </motion.div>
       <motion.div
         className="absolute -ml-[3px] -mt-[3px] h-1.5 w-1.5 rounded-full bg-fg"
         style={{

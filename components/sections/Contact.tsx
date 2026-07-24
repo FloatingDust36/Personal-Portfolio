@@ -1,5 +1,6 @@
 import { profile } from "@/content/profile";
 import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
 import DuskPanel from "@/components/dusk/DuskPanel";
 
 export default function Contact() {
@@ -16,9 +17,16 @@ export default function Contact() {
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
                 Contact
               </p>
-              <h2 className="mt-5 font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl">
-                Let&apos;s talk.
-              </h2>
+            </Reveal>
+            <SplitReveal
+              as="h2"
+              type="chars"
+              stagger={0.03}
+              className="mt-5 font-display text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl"
+            >
+              Let&apos;s talk.
+            </SplitReveal>
+            <Reveal delay={0.1}>
               <p className="mt-6 max-w-md leading-relaxed text-fg-muted">
                 Ask Dusk about John Peter&apos;s work, or reach him directly. He&apos;s
                 open to part-time, remote roles.
