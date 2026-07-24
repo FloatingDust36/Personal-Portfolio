@@ -4,11 +4,8 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
-
-const PLACEHOLDER_SECTIONS = [
-  { id: "skills", label: "Skills" },
-  { id: "awards", label: "Awards" },
-] as const;
+import Skills from "@/components/sections/Skills";
+import Awards from "@/components/sections/Awards";
 
 export default function Home() {
   return (
@@ -17,23 +14,8 @@ export default function Home() {
       <About />
       <Experience />
       <Projects />
-
-      {PLACEHOLDER_SECTIONS.map(({ id, label }) => (
-        <section
-          key={id}
-          id={id}
-          className="flex min-h-screen scroll-mt-20 items-center border-t border-line px-6"
-        >
-          <div className="mx-auto w-full max-w-6xl">
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-fg-subtle">
-              {label}
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-light text-fg">
-              {label} section
-            </h2>
-          </div>
-        </section>
-      ))}
+      <Skills />
+      <Awards />
 
       {/* Contact placeholder (merged with Dusk later) */}
       <section
