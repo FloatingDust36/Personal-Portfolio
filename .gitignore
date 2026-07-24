@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Full-resolution hero source art (kept locally as input for video generation)
 public/hero/still-*.png
+
+.vercel
+.env*
