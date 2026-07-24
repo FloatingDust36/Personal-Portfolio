@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { heroMedia } from "@/content/heroMedia";
 import { profile } from "@/content/profile";
@@ -61,17 +62,35 @@ export default function HeroMedia() {
             <source src={video} type={video.endsWith(".webm") ? "video/webm" : "video/mp4"} />
           </video>
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-cover" />
+          <Image
+            src={image}
+            alt=""
+            fill
+            priority
+            // Capped so we never request a variant larger than the source art,
+            // and phones get a genuinely small file.
+            sizes="(max-width: 640px) 640px, (max-width: 1200px) 1200px, 1920px"
+            // Tall screens crop the sides, so bias the framing right to keep
+            // the figure in shot; wide screens show the full composition.
+            className="object-cover object-[68%_50%] sm:object-center"
+          />
         )}
       </motion.div>
 
       {/* Drifting particles for extra life over the painting */}
       <InkParticles className="absolute inset-0" />
 
-      {/* Legibility wash — heavier on the text (left) side */}
+      {/* Legibility wash. Tall screens read top-to-bottom, so the copy is
+          protected vertically there; wide screens shield the left column. */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 sm:hidden"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in srgb, var(--bg) 92%, transparent) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 55%, color-mix(in srgb, var(--bg) 25%, transparent) 82%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 hidden sm:block"
         style={{
           background:
             "linear-gradient(100deg, color-mix(in srgb, var(--bg) 78%, transparent) 0%, color-mix(in srgb, var(--bg) 30%, transparent) 42%, transparent 64%)",

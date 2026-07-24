@@ -10,16 +10,23 @@
 // video path is set it wins over the image. A dark variant is optional — the
 // light asset is reused for dark if a dark one is not provided.
 
-export const heroMedia = {
-  enabled: false,
+export type HeroMediaConfig = {
+  enabled: boolean;
+  videoLight: string;
+  videoDark: string;
+  imageLight: string;
+  imageDark: string;
+};
 
-  // Seamless loop, muted. Leave "" to use the image instead.
-  videoLight: "/hero/scene-light.mp4",
-  videoDark: "/hero/scene-dark.mp4",
+export const heroMedia: HeroMediaConfig = {
+  enabled: true,
 
-  // Still fallback (also the video poster / first paint).
-  imageLight: "/hero/scene-light.jpg",
-  imageDark: "/hero/scene-dark.jpg",
-} as const;
+  // Seamless loop, muted. Empty until the video loops are generated — when a
+  // path is set here it takes over from the still.
+  videoLight: "",
+  videoDark: "",
 
-export type HeroMediaConfig = typeof heroMedia;
+  // The ink-wash paintings (also the video poster / first paint once video lands).
+  imageLight: "/hero/scene-light.webp",
+  imageDark: "/hero/scene-dark.webp",
+};
