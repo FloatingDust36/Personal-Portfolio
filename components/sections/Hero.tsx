@@ -1,13 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
-import ParallaxLayer from "@/components/motion/ParallaxLayer";
 import MaskText from "@/components/motion/MaskText";
-import InkParticles from "@/components/motion/InkParticles";
-import InkFlowCanvas from "@/components/motion/InkFlowCanvas";
-import InkFigure from "@/components/motion/InkFigure";
+
+// The 3D scene is heavy and WebGL-only — load it client-side, after the text.
+const HeroScene = dynamic(() => import("@/components/hero3d/HeroScene"), {
+  ssr: false,
+});
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -27,40 +29,17 @@ export default function Hero() {
   return (
     <section
       id="top"
-      data-parallax-scene
       className="relative flex min-h-[100svh] items-center overflow-hidden"
     >
-      {/* Living ink-wash landscape */}
+      {/* Living 3D ink-wash landscape */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        {/* Flowing ink, rendered on the GPU */}
-        <InkFlowCanvas className="absolute inset-0 h-full w-full" />
-
-        {/* Lone figure, emerging from the mist (faint on mobile, full on sm+) */}
-        <ParallaxLayer
-          speed={0.82}
-          className="absolute bottom-[9%] right-[3%] h-[40%] w-[46%] max-w-[200px] opacity-40 sm:bottom-[10%] sm:right-[11%] sm:h-[54%] sm:w-[38%] sm:max-w-[290px] sm:opacity-100"
-          aria-hidden
-        >
-          <div
-            className="mx-auto h-full w-full"
-            style={{
-              maskImage: "linear-gradient(to bottom, #000 74%, transparent 98%)",
-              WebkitMaskImage: "linear-gradient(to bottom, #000 74%, transparent 98%)",
-            }}
-          >
-            <InkFigure className="mx-auto block h-full w-auto text-fg" />
-          </div>
-        </ParallaxLayer>
-
-        {/* Fine drifting flecks for foreground texture */}
-        <InkParticles className="absolute inset-0" />
-
+        <HeroScene />
         {/* Legibility wash beneath the text */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(102deg, color-mix(in srgb, var(--bg) 78%, transparent) 0%, color-mix(in srgb, var(--bg) 34%, transparent) 44%, transparent 66%)",
+              "linear-gradient(102deg, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 36%, transparent) 44%, transparent 66%)",
           }}
         />
       </div>
