@@ -68,7 +68,6 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      data-cursor="Theme"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       className="grid h-9 w-9 place-items-center rounded-full text-fg-muted transition-colors duration-500 ease-[var(--ease-settle)] hover:text-fg"
     >

@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { profile } from "@/content/profile";
 import { useSmoothScrollTo } from "@/components/providers/SmoothScroll";
-import Magnetic from "@/components/motion/Magnetic";
 // Imported statically (not lazily) so the artwork ships in the initial HTML
 // and the browser can preload it — this is the largest paint on the page.
 import HeroMedia from "@/components/sections/HeroMedia";
@@ -78,26 +77,22 @@ export default function Hero() {
           </div>
 
           <div {...rise(0.46, "mt-11 flex flex-wrap items-center gap-5")}>
-            <Magnetic strength={0.5}>
-              <button
-                type="button"
-                data-cursor="Chat"
-                onClick={() => {
-                  scrollTo("#contact", { offset: -72 });
-                  // Land the caret in Dusk once the scroll has settled.
-                  window.setTimeout(() => {
-                    document.getElementById("dusk-input")?.focus({ preventScroll: true });
-                  }, 900);
-                }}
-                className="rounded-full bg-seal px-7 py-3 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-opacity duration-500 ease-[var(--ease-settle)] hover:opacity-90"
-              >
-                Speak with Dusk
-              </button>
-            </Magnetic>
+            <button
+              type="button"
+              onClick={() => {
+                scrollTo("#contact", { offset: -72 });
+                // Land the caret in Dusk once the scroll has settled.
+                window.setTimeout(() => {
+                  document.getElementById("dusk-input")?.focus({ preventScroll: true });
+                }, 900);
+              }}
+              className="rounded-full bg-seal px-7 py-3 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-opacity duration-500 ease-[var(--ease-settle)] hover:opacity-90"
+            >
+              Speak with Dusk
+            </button>
             {profile.resumeUrl && (
               <a
                 href={profile.resumeUrl}
-                data-cursor="Open"
                 className="group inline-flex items-center gap-2 py-3 font-mono text-xs uppercase tracking-[0.16em] text-fg-muted transition-colors duration-300 hover:text-fg"
               >
                 Résumé
