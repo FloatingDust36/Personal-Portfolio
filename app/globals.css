@@ -123,6 +123,23 @@
   }
 }
 
+/* First-load intro overlay. Server-rendered and covering by default; the head
+   script in layout.tsx flips [data-intro] before paint, so repeat visits and
+   reduced motion hide it with no flash. */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  will-change: transform;
+}
+:root[data-intro="done"] .intro-overlay {
+  display: none;
+}
+
 /* Theme toggle via the View Transitions API: the new theme is revealed by a
    growing circle (animated in ThemeToggle), so suppress the default cross-fade
    and stack the new snapshot on top. */

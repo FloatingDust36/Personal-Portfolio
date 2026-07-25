@@ -44,6 +44,16 @@ const themeScript = `
       document.documentElement.classList.add("dark");
     }
   } catch (e) {}
+
+  // Decide the intro overlay before first paint so it never flashes: show it on
+  // the first visit of a session, skip it on repeat visits and reduced motion.
+  try {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var seen = sessionStorage.getItem("intro-seen") === "1";
+    document.documentElement.dataset.intro = (seen || reduce) ? "done" : "show";
+  } catch (e) {
+    document.documentElement.dataset.intro = "done";
+  }
 })();
 `;
 
