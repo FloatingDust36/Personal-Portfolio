@@ -1,13 +1,17 @@
 import { skillTiers, currentlyLearning } from "@/content/skills";
 import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
+import SkillsConstellation from "@/components/ui/SkillsConstellation";
+
+const LEGEND = [
+  { name: "Working", size: 12, blurb: "Built real features" },
+  { name: "Familiar", size: 9, blurb: "Used in a project" },
+  { name: "Exposure", size: 7, blurb: "Coursework / one project" },
+];
 
 export default function Skills() {
   return (
-    <section
-      id="skills"
-      className="scroll-mt-20 border-t border-line py-28 sm:py-36"
-    >
+    <section id="skills" className="scroll-mt-20 border-t border-line py-28 sm:py-36">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-fg-subtle">
@@ -21,56 +25,53 @@ export default function Skills() {
         >
           Honest about the depth.
         </SplitReveal>
+        <Reveal delay={0.1}>
+          <p className="mt-6 max-w-xl font-mono text-[0.7rem] uppercase tracking-[0.2em] text-fg-subtle">
+            A map of what he works with — hover a cluster to trace it.
+          </p>
+        </Reveal>
 
-        <div className="mt-14 space-y-px">
-          {skillTiers.map((tier) => (
-            <Reveal key={tier.name}>
-              <div className="grid gap-5 border-t border-line py-10 lg:grid-cols-[0.8fr_2fr] lg:gap-12">
-                <div>
-                  <h3 className="font-display text-2xl font-light text-fg">
-                    {tier.name}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-fg-subtle">
-                    {tier.blurb}
-                  </p>
-                </div>
-                <ul className="flex flex-wrap gap-2 self-start">
-                  {tier.items.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-full border border-line px-3 py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fg-muted"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
+        {/* Constellation */}
+        <Reveal delay={0.15}>
+          <div className="relative mt-8 h-[62vh] min-h-[440px] w-full">
+            <SkillsConstellation />
+          </div>
+        </Reveal>
 
-          {/* Currently learning — clearly separated from actual skills */}
-          <Reveal>
-            <div className="grid gap-5 border-t border-line py-10 lg:grid-cols-[0.8fr_2fr] lg:gap-12">
-              <div>
-                <h3 className="font-display text-2xl font-light italic text-fg-muted">
-                  {currentlyLearning.label}
-                </h3>
-                <p className="mt-2 max-w-xs text-sm leading-relaxed text-fg-subtle">
-                  In progress — not yet used in a shipped project.
-                </p>
-              </div>
-              <ul className="flex flex-wrap gap-2 self-start">
-                {currentlyLearning.items.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border border-dashed border-line px-3 py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fg-subtle"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+        {/* Legend + currently learning */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-line pt-6">
+          {LEGEND.map((l) => (
+            <div key={l.name} className="flex items-center gap-2.5">
+              <span
+                className="rounded-full bg-fg"
+                style={{ width: l.size, height: l.size }}
+              />
+              <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-fg-muted">
+                {l.name}
+              </span>
+              <span className="hidden text-xs text-fg-subtle sm:inline">
+                — {l.blurb}
+              </span>
             </div>
-          </Reveal>
+          ))}
+          <div className="flex items-center gap-2.5">
+            <span className="h-2.5 w-2.5 rounded-full border border-dashed border-fg-subtle" />
+            <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-fg-subtle italic">
+              {currentlyLearning.label}: {currentlyLearning.items.join(", ")}
+            </span>
+          </div>
+        </div>
+
+        {/* Accessible, crawlable fallback of the same content */}
+        <div className="sr-only">
+          {skillTiers.map((t) => (
+            <p key={t.name}>
+              {t.name} ({t.blurb}): {t.items.join(", ")}.
+            </p>
+          ))}
+          <p>
+            {currentlyLearning.label}: {currentlyLearning.items.join(", ")}.
+          </p>
         </div>
       </div>
     </section>
