@@ -133,8 +133,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg);
-  will-change: transform;
+  /* No background: the peeling panels inside provide the cover, so lifting them
+     reveals the page behind. */
 }
 :root[data-intro="done"] .intro-overlay {
   display: none;
