@@ -123,6 +123,21 @@
   }
 }
 
+/* Theme toggle via the View Transitions API: the new theme is revealed by a
+   growing circle (animated in ThemeToggle), so suppress the default cross-fade
+   and stack the new snapshot on top. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
 /* Fixed film-grain / rice-paper texture. Faint, blended, and jittering to feel
    tactile rather than digital. */
 .grain-overlay {

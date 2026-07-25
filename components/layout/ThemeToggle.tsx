@@ -13,8 +13,7 @@ export default function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  const toggle = () => {
-    const next = !document.documentElement.classList.contains("dark");
+  const apply = (next: boolean) => {
     document.documentElement.classList.toggle("dark", next);
     try {
       localStorage.setItem("theme", next ? "dark" : "light");
@@ -24,10 +23,52 @@ export default function ThemeToggle() {
     setDark(next);
   };
 
+  const toggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const next = !document.documentElement.classList.contains("dark");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Circular ink reveal from the toggle, via the View Transitions API.
+    const startVT = (
+      document as Document & {
+        startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+      }
+    ).startViewTransition?.bind(document);
+
+    if (reduced || !startVT) {
+      apply(next);
+      return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    const r = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    const transition = startVT(() => apply(next));
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${r}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 620,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        },
+      );
+    });
+  };
+
   return (
     <button
       type="button"
       onClick={toggle}
+      data-cursor="Theme"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       className="grid h-9 w-9 place-items-center rounded-full text-fg-muted transition-colors duration-500 ease-[var(--ease-settle)] hover:text-fg"
     >

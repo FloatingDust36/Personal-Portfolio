@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import CustomCursor from "@/components/motion/CustomCursor";
+import Preloader from "@/components/motion/Preloader";
 import ScrollProgress from "@/components/motion/ScrollProgress";
 import PaperGrain from "@/components/motion/PaperGrain";
 import Nav from "@/components/layout/Nav";
@@ -67,6 +68,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <Preloader />
         <CustomCursor />
         <PaperGrain />
         <ScrollProgress />
