@@ -1,19 +1,29 @@
 import { profile } from "@/content/profile";
+import SplitReveal from "@/components/motion/SplitReveal";
 
 const year = new Date().getFullYear();
 
 export default function Footer() {
   return (
-    <footer className="border-t border-line">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-12 sm:flex-row sm:items-end sm:justify-between sm:px-8">
-        <div>
-          <p className="font-display text-2xl font-light text-fg">
-            {profile.shortName}
-          </p>
-          <p className="mt-1 font-mono text-xs uppercase tracking-[0.18em] text-fg-subtle">
-            {profile.location}
-          </p>
-        </div>
+    <footer className="overflow-hidden border-t border-line">
+      {/* Oversized name */}
+      <div className="mx-auto max-w-6xl px-5 pt-20 sm:px-8">
+        <SplitReveal
+          as="p"
+          type="words"
+          stagger={0.08}
+          className="font-display font-light leading-[0.86] tracking-tight text-fg"
+          // clamp so it fills the width without overflowing
+        >
+          <span className="block text-[clamp(2.75rem,13vw,11rem)]">John Peter</span>
+          <span className="block text-[clamp(2.75rem,13vw,11rem)]">Pestaño</span>
+        </SplitReveal>
+      </div>
+
+      <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-6 px-5 py-12 sm:flex-row sm:items-end sm:justify-between sm:px-8">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-fg-subtle">
+          {profile.location} · Open to part-time, remote
+        </p>
 
         <nav aria-label="Contact and profiles">
           <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-[0.14em]">

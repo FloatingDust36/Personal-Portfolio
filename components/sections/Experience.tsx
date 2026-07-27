@@ -25,12 +25,20 @@ export default function Experience() {
         <div className="mt-14 sm:mt-20">
           {experience.map((e, i) => (
             <Reveal key={e.org} delay={i * 0.05}>
-              <article className="grid gap-6 border-t border-line py-10 lg:grid-cols-[0.9fr_1.6fr] lg:gap-12">
+              <article className="group grid gap-6 border-t border-line py-12 lg:grid-cols-[0.9fr_1.6fr] lg:gap-12">
                 <div>
-                  <h3 className="font-display text-2xl font-light leading-tight text-fg">
+                  <span className="font-mono text-xs text-fg-subtle">
+                    0{i + 1}
+                  </span>
+                  <SplitReveal
+                    as="h3"
+                    type="words"
+                    stagger={0.06}
+                    className="mt-2 font-display text-3xl font-light leading-tight text-fg sm:text-4xl"
+                  >
                     {e.org}
-                  </h3>
-                  <p className="mt-2 text-fg-muted">{e.role}</p>
+                  </SplitReveal>
+                  <p className="mt-3 text-fg-muted">{e.role}</p>
                   <p className="mt-4 font-mono text-xs uppercase tracking-[0.16em] text-fg-subtle">
                     {e.period}
                   </p>
