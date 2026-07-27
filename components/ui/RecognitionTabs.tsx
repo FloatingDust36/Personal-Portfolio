@@ -2,12 +2,14 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { recognition } from "@/content/awards";
+import { recognition, type Award } from "@/content/awards";
+import Lightbox from "@/components/ui/Lightbox";
 
 export default function RecognitionTabs() {
   const [active, setActive] = useState(
     Math.max(0, recognition.findIndex((g) => g.items.length > 0)),
   );
+  const [lb, setLb] = useState<{ images: string[]; alt: string } | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const onKey = (e: React.KeyboardEvent, i: number) => {
@@ -56,74 +58,79 @@ export default function RecognitionTabs() {
       </div>
 
       {/* Panel */}
-      <div
-        role="tabpanel"
-        id={`rec-panel-${active}`}
-        aria-labelledby={`rec-tab-${active}`}
-        className="mt-10"
-      >
+      <div role="tabpanel" id={`rec-panel-${active}`} aria-labelledby={`rec-tab-${active}`} className="mt-8">
         {group.items.length === 0 ? (
-          <div className="flex min-h-[180px] items-center rounded-sm border border-dashed border-line px-8 py-12">
-            <p className="max-w-md text-sm leading-relaxed text-fg-subtle">
-              {group.level} awards are being compiled — the medals and placements
-              from this level will appear here soon.
-            </p>
-          </div>
+          <p className="max-w-md text-sm leading-relaxed text-fg-subtle">
+            {group.level} awards are being compiled — the medals and placements
+            from this level will appear here soon.
+          </p>
         ) : (
-          <div className="space-y-14">
+          <ul className="divide-y divide-line">
             {group.items.map((a) => (
-              <article
-                key={a.title}
-                className="grid gap-8 border-b border-line pb-14 last:border-0 last:pb-0 lg:grid-cols-2 lg:gap-12"
-              >
-                {/* Photo */}
-                <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-line bg-surface/40">
-                  {a.images && a.images[0] ? (
-                    <Image
-                      src={a.images[0]}
-                      alt={`${a.title} — ${a.org ?? ""}`}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 45vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <>
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          background:
-                            "radial-gradient(130% 110% at 80% 85%, color-mix(in srgb, var(--fg) 14%, transparent), transparent 58%)",
-                        }}
-                      />
-                      <span className="absolute bottom-5 left-6 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-fg-subtle">
-                        Photo forthcoming
-                      </span>
-                    </>
-                  )}
-                </div>
-
-                {/* Text */}
-                <div className="flex flex-col justify-center">
-                  {a.year && (
-                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-fg-subtle">
-                      {a.year}
-                    </p>
-                  )}
-                  <h4 className="mt-2 font-display text-3xl font-light leading-tight text-fg sm:text-4xl">
-                    {a.title}
-                  </h4>
-                  {a.org && <p className="mt-2 text-fg-muted">{a.org}</p>}
-                  {a.description && (
-                    <p className="mt-4 max-w-md leading-relaxed text-fg-muted">
-                      {a.description}
-                    </p>
-                  )}
-                </div>
-              </article>
+              <li key={a.title}>
+                <Row award={a} onOpen={(images) => setLb({ images, alt: a.title })} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
+
+      {lb && <Lightbox images={lb.images} alt={lb.alt} onClose={() => setLb(null)} />}
     </div>
+  );
+}
+
+function Row({ award: a, onOpen }: { award: Award; onOpen: (images: string[]) => void }) {
+  const imgs = a.images ?? [];
+  return (
+    <article className="grid grid-cols-[110px_1fr] gap-5 py-7 sm:grid-cols-[150px_1fr] sm:gap-8">
+      {/* Compact thumbnail */}
+      {imgs.length > 0 ? (
+        <button
+          type="button"
+          onClick={() => onOpen(imgs)}
+          aria-label={`View photos of ${a.title}`}
+          className="group relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-line"
+        >
+          <Image
+            src={imgs[0]}
+            alt={`${a.title}${a.org ? ` — ${a.org}` : ""}`}
+            fill
+            sizes="150px"
+            className="object-cover transition-transform duration-500 ease-[var(--ease-settle)] group-hover:scale-105"
+          />
+          <span className="absolute inset-0 bg-fg/0 transition-colors duration-300 group-hover:bg-fg/10" />
+          {imgs.length > 1 && (
+            <span className="absolute bottom-1.5 right-1.5 rounded-full bg-bg/85 px-2 py-0.5 font-mono text-[0.55rem] tracking-wide text-fg-muted backdrop-blur-sm">
+              +{imgs.length - 1}
+            </span>
+          )}
+        </button>
+      ) : (
+        <div className="grid aspect-[4/3] w-full place-items-center rounded-sm border border-dashed border-line">
+          <span className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-fg-subtle">
+            No photo
+          </span>
+        </div>
+      )}
+
+      {/* Text */}
+      <div className="min-w-0 self-center">
+        {a.year && (
+          <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-fg-subtle">
+            {a.year}
+          </p>
+        )}
+        <h4 className="mt-1 font-display text-2xl font-light leading-tight text-fg">
+          {a.title}
+        </h4>
+        {a.org && <p className="mt-1 text-sm text-fg-muted">{a.org}</p>}
+        {a.description && (
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-fg-muted">
+            {a.description}
+          </p>
+        )}
+      </div>
+    </article>
   );
 }
