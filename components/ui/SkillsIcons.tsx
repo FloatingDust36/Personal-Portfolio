@@ -32,8 +32,7 @@ import {
   siQdrant,
   type SimpleIcon,
 } from "simple-icons";
-import { skillTiers, currentlyLearning } from "@/content/skills";
-import Marquee from "@/components/motion/Marquee";
+import { skillTiers } from "@/content/skills";
 
 const ICONS: Record<string, SimpleIcon> = {
   Python: siPython,
@@ -121,92 +120,93 @@ function TierDot({ tier }: { tier?: string }) {
     tier === "Working"
       ? "bg-fg"
       : tier === "Familiar"
-        ? "bg-fg-subtle"
-        : "border border-fg-subtle";
-  return <span className={`h-1.5 w-1.5 rounded-full ${cls}`} aria-hidden="true" />;
+        ? "bg-fg-muted"
+        : "border-[1.5px] border-fg-subtle";
+  return <span className={`block h-2 w-2 rounded-full ${cls}`} aria-hidden="true" />;
 }
 
 function Tile({ name }: { name: string }) {
   const icon = ICONS[name];
   return (
-    <div className="group relative flex flex-col items-center gap-3 rounded-md border border-line bg-surface/40 px-3 py-6 text-center transition-colors duration-300 hover:border-fg-subtle/40">
-      <span className="absolute right-2.5 top-2.5">
+    <div className="group relative flex flex-col items-center gap-2.5 rounded-md border border-line bg-surface/40 px-2.5 py-5 text-center transition-colors duration-300 hover:border-fg-subtle/40">
+      <span className="absolute right-2 top-2">
         <TierDot tier={TIER[name]} />
       </span>
-      <div className="grid h-9 w-9 place-items-center">
+      <div className="grid h-8 w-8 place-items-center">
         {icon && (
-          <svg viewBox="0 0 24 24" width="30" height="30" fill={colorFor(icon.hex)} aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill={colorFor(icon.hex)} aria-hidden="true">
             <path d={icon.path} />
           </svg>
         )}
       </div>
-      <span className="font-mono text-[0.6rem] uppercase tracking-[0.12em] text-fg-subtle">
+      <span className="font-mono text-[0.56rem] uppercase tracking-[0.1em] leading-tight text-fg-subtle">
         {name}
       </span>
     </div>
   );
 }
 
-export default function SkillsIcons() {
+function Panel({ cat, tools }: { cat: string; tools: string[] }) {
   return (
-    <div>
-      {/* Tools & technologies — by domain */}
-      <div className="mx-auto max-w-6xl space-y-10 px-5 sm:px-8">
-        {Object.entries(CATEGORIES).map(([cat, items]) => {
-          const tools = items.filter((i) => ICONS[i]);
-          if (tools.length === 0) return null;
-          return (
-            <div key={cat}>
-              <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
-                {cat}
-              </h3>
-              <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-5 sm:gap-4 lg:grid-cols-7">
-                {tools.map((item) => (
-                  <Tile key={item} name={item} />
-                ))}
-              </div>
-            </div>
-          );
-        })}
+    <div className="flex flex-col">
+      <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
+        {cat}
+      </h3>
+      <div className="mt-4 grid grid-cols-3 gap-2.5">
+        {tools.map((item) => (
+          <Tile key={item} name={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-fg-subtle">
-          <span className="flex items-center gap-2">
-            <TierDot tier="Working" /> Working
-          </span>
-          <span className="flex items-center gap-2">
-            <TierDot tier="Familiar" /> Familiar
-          </span>
-          <span className="flex items-center gap-2">
-            <TierDot tier="Exposure" /> Exposure
-          </span>
+export default function SkillsIcons() {
+  const panels = Object.entries(CATEGORIES)
+    .map(([cat, items]) => ({ cat, tools: items.filter((i) => ICONS[i]) }))
+    .filter((p) => p.tools.length > 0);
+
+  return (
+    <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="grid gap-x-10 gap-y-12 lg:grid-cols-2 lg:items-stretch">
+        {panels.map((p) => (
+          <Panel key={p.cat} cat={p.cat} tools={p.tools} />
+        ))}
+
+        {/* Practices & approaches — a vertical marquee that stands beside the
+            tool tiles instead of trailing after them. */}
+        <div className="flex flex-col">
+          <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
+            Practices &amp; approaches
+          </h3>
+          <div
+            className="vmarquee group relative mt-4 h-[340px] overflow-hidden rounded-md border border-line bg-surface/40"
+            aria-hidden="true"
+          >
+            <div className="vmarquee-track flex flex-col gap-5 px-6 py-6">
+              {[...CONCEPTS, ...CONCEPTS].map((s, i) => (
+                <span
+                  key={i}
+                  className="font-display text-2xl font-light leading-none text-fg-muted"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Concepts & practices — a marquee */}
-      <div className="mt-14 border-y border-line py-8">
-        <p className="mx-auto mb-4 max-w-6xl px-5 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted sm:px-8">
-          Practices &amp; approaches
-        </p>
-        <Marquee seconds={50}>
-          {CONCEPTS.map((s) => (
-            <span
-              key={s}
-              className="flex items-center gap-8 font-display text-3xl font-light text-fg-muted sm:text-5xl"
-            >
-              {s}
-              <span className="text-xl text-seal/60" aria-hidden="true">
-                ·
-              </span>
-            </span>
-          ))}
-        </Marquee>
-      </div>
-
-      {/* Currently learning */}
-      <div className="mx-auto max-w-6xl px-5 pt-8 sm:px-8">
-        <span className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-fg-subtle italic">
-          {currentlyLearning.label}: {currentlyLearning.items.join(", ")} — not yet shipped
+      {/* Legend for the proficiency dots */}
+      <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-fg-subtle">
+        <span className="flex items-center gap-2">
+          <TierDot tier="Working" /> Working
+        </span>
+        <span className="flex items-center gap-2">
+          <TierDot tier="Familiar" /> Familiar
+        </span>
+        <span className="flex items-center gap-2">
+          <TierDot tier="Exposure" /> Exposure
         </span>
       </div>
 
