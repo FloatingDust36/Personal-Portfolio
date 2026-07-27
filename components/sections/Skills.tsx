@@ -7,11 +7,13 @@ import SplitReveal from "@/components/motion/SplitReveal";
 const SkillsConstellation = dynamic(() => import("@/components/ui/SkillsConstellation"));
 const SkillsMeters = dynamic(() => import("@/components/ui/SkillsMeters"));
 const SkillsMarquee = dynamic(() => import("@/components/ui/SkillsMarquee"));
+const SkillsIcons = dynamic(() => import("@/components/ui/SkillsIcons"));
 
-// Swap to compare treatments: "constellation" | "meters" | "marquee".
-const VARIANT: "constellation" | "meters" | "marquee" = "marquee";
+// Swap to compare treatments: "icons" | "constellation" | "meters" | "marquee".
+const VARIANT: "icons" | "constellation" | "meters" | "marquee" = "icons";
 
 const HINT: Record<string, string> = {
+  icons: "What he works with, grouped by how deeply — honest, not inflated.",
   constellation: "A map of what he works with — hover a cluster to trace it.",
   meters: "Grouped by how deeply he's worked with each — honest, not inflated.",
   marquee: "What he works with, by depth — hover a row to pause it.",
@@ -52,6 +54,10 @@ export default function Skills() {
                 <SkillsConstellation />
               </div>
             </Reveal>
+          ) : VARIANT === "icons" ? (
+            <div className="mt-12">
+              <SkillsIcons />
+            </div>
           ) : (
             <div className="mt-12">
               <SkillsMeters />
