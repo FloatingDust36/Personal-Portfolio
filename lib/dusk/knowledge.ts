@@ -7,13 +7,7 @@ import { experience } from "@/content/experience";
 import { education } from "@/content/education";
 import { groupA, groupB, groupMore } from "@/content/projects";
 import { skillTiers, currentlyLearning } from "@/content/skills";
-import {
-  competitions,
-  scholarship,
-  academicHonors,
-  certifications,
-  certsInProgress,
-} from "@/content/awards";
+import { featured, recognition, credentials } from "@/content/awards";
 
 export function buildKnowledgeContext(): string {
   const lines: string[] = [];
@@ -58,21 +52,26 @@ export function buildKnowledgeContext(): string {
     `${currentlyLearning.label} (not yet used in a shipped project): ${currentlyLearning.items.join(", ")}.`,
   );
 
-  lines.push("\n## Awards & credentials");
+  lines.push("\n## Recognition & credentials");
   lines.push(
-    "Competitions: " +
-      competitions.map((c) => `${c.title} — ${c.detail} (${c.year})`).join("; "),
+    `Flagship: ${featured.placement}, ${featured.subject} (${featured.year}) — ${featured.detail}. This was a live contest.`,
   );
-  lines.push(
-    "Scholarship: " +
-      scholarship.map((s) => `${s.title} — ${s.detail} (${s.year})`).join("; "),
-  );
-  lines.push("Academic: " + academicHonors.join("; "));
-  lines.push(
-    "Certifications (completed): " +
-      certifications.map((c) => c.name + (c.when ? ` (${c.when})` : "")).join("; "),
-  );
-  lines.push("Certifications (in progress): " + certsInProgress.join("; "));
+  for (const g of recognition) {
+    lines.push(
+      `${g.level}: ` +
+        g.items
+          .map((a) => `${a.title}${a.year ? ` (${a.year})` : ""}${a.detail ? ` — ${a.detail}` : ""}`)
+          .join("; "),
+    );
+  }
+  for (const g of credentials) {
+    lines.push(
+      `Credentials — ${g.category}: ` +
+        g.items
+          .map((c) => `${c.name} (${c.issuer}${c.done ? c.when ? `, ${c.when}` : "" : ", in progress"})`)
+          .join("; "),
+    );
+  }
 
   return lines.join("\n");
 }
