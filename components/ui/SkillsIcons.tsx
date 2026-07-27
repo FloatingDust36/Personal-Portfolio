@@ -115,9 +115,8 @@ const LEGEND: { tier: string; label: string; desc: string }[] = [
   { tier: "Exposure", label: "Exposure", desc: "coursework / one project" },
 ];
 
-// One masonry over every category packs into two balanced columns, so a short
-// category no longer leaves a tall gap beside a taller one.
 const CATEGORY_KEYS = Object.keys(CATEGORIES);
+const TIER_RANK: Record<string, number> = { Working: 0, Familiar: 1, Exposure: 2 };
 
 // Skills that are practices/concepts rather than a tool with a logo.
 const CONCEPTS = skillTiers.flatMap((t) => t.items).filter((s) => !ICONS[s]);
@@ -130,13 +129,13 @@ function colorFor(hex: string): string {
 
 function TierDot({ tier }: { tier?: string }) {
   if (tier === "Working") {
-    return <span className="block h-2.5 w-2.5 rounded-full bg-fg" aria-hidden="true" />;
+    return <span className="block h-2 w-2 shrink-0 rounded-full bg-fg" aria-hidden="true" />;
   }
   if (tier === "Familiar") {
     // Half-filled "moon" — unmistakably between the solid and the ring.
     return (
       <span
-        className="block h-2.5 w-2.5 rounded-full border border-fg"
+        className="block h-2 w-2 shrink-0 rounded-full border border-fg"
         style={{ background: "linear-gradient(90deg, var(--fg) 50%, transparent 50%)" }}
         aria-hidden="true"
       />
@@ -144,44 +143,49 @@ function TierDot({ tier }: { tier?: string }) {
   }
   return (
     <span
-      className="block h-2.5 w-2.5 rounded-full border-[1.5px] border-fg-subtle"
+      className="block h-2 w-2 shrink-0 rounded-full border-[1.5px] border-fg-subtle"
       aria-hidden="true"
     />
   );
 }
 
-function Tile({ name }: { name: string }) {
+function Item({ name }: { name: string }) {
   const icon = ICONS[name];
   return (
-    <div className="group relative flex flex-col items-center gap-2.5 rounded-md border border-line bg-surface/40 px-2.5 py-5 text-center transition-colors duration-300 hover:border-fg-subtle/40">
-      <span className="absolute right-2 top-2">
-        <TierDot tier={TIER[name]} />
-      </span>
-      <div className="grid h-8 w-8 place-items-center">
-        {icon && (
-          <svg viewBox="0 0 24 24" width="28" height="28" fill={colorFor(icon.hex)} aria-hidden="true">
-            <path d={icon.path} />
-          </svg>
-        )}
-      </div>
-      <span className="font-mono text-[0.56rem] uppercase tracking-[0.1em] leading-tight text-fg-subtle">
+    <span className="group inline-flex items-center gap-2">
+      {icon && (
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill={colorFor(icon.hex)}
+          aria-hidden="true"
+          className="shrink-0"
+        >
+          <path d={icon.path} />
+        </svg>
+      )}
+      <span className="text-sm text-fg-muted transition-colors duration-200 group-hover:text-fg">
         {name}
       </span>
-    </div>
+      <TierDot tier={TIER[name]} />
+    </span>
   );
 }
 
-function Panel({ cat }: { cat: string }) {
-  const tools = (CATEGORIES[cat] ?? []).filter((i) => ICONS[i]);
+function Row({ cat }: { cat: string }) {
+  const tools = (CATEGORIES[cat] ?? [])
+    .filter((i) => ICONS[i])
+    .sort((a, b) => (TIER_RANK[TIER[a]] ?? 9) - (TIER_RANK[TIER[b]] ?? 9));
   if (tools.length === 0) return null;
   return (
-    <div className="mb-8 break-inside-avoid">
-      <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
+    <div className="grid gap-3 py-6 sm:grid-cols-[168px_1fr] sm:gap-10 sm:py-7">
+      <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted sm:pt-1">
         {cat}
       </h3>
-      <div className="mt-4 grid grid-cols-3 gap-2.5">
+      <div className="flex flex-wrap gap-x-7 gap-y-4">
         {tools.map((item) => (
-          <Tile key={item} name={item} />
+          <Item key={item} name={item} />
         ))}
       </div>
     </div>
@@ -193,7 +197,7 @@ export default function SkillsIcons() {
     <div>
       {/* Practices & approaches — a full-width kinetic band leading into the
           tools, prominent rather than trailing after them. */}
-      <div className="mb-14 border-y border-line py-7">
+      <div className="mb-12 border-y border-line py-7">
         <p className="mx-auto mb-4 max-w-6xl px-5 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted sm:px-8">
           Practices &amp; approaches
         </p>
@@ -213,15 +217,16 @@ export default function SkillsIcons() {
       </div>
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        {/* Every category in one masonry — two balanced columns, no tall gaps. */}
-        <div className="gap-8 md:columns-2">
+        {/* Editorial spec sheet — one aligned row per category, hairline-ruled,
+            tools ordered by proficiency. No boxes, no ragged columns. */}
+        <div className="divide-y divide-line border-t border-line">
           {CATEGORY_KEYS.map((cat) => (
-            <Panel key={cat} cat={cat} />
+            <Row key={cat} cat={cat} />
           ))}
         </div>
 
         {/* Legend for the proficiency dots */}
-        <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-fg-subtle">
+        <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-fg-subtle">
           {LEGEND.map((l) => (
             <span key={l.tier} className="flex items-center gap-2">
               <TierDot tier={l.tier} /> {l.label}
