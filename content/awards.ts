@@ -11,14 +11,13 @@ export type Award = {
   images?: string[]; // paths in /public/awards; a placeholder shows if empty
 };
 
-export type Cert = { name: string; issuer: string; url?: string; when?: string; done: boolean };
-
-// The flagship, called out above the tabs.
-export const featured = {
-  placement: "1st Runner-Up",
-  subject: "Competitive Programming (Python)",
-  detail: 'CpE Regional Challenge, "AutoMATHic," UP Civil Engineering Society',
-  year: "2026",
+export type Cert = {
+  name: string;
+  issuer: string;
+  url?: string;
+  when?: string;
+  done: boolean;
+  images?: string[]; // certificate photo(s) in /public/certs
 };
 
 export const recognition: { level: string; items: Award[] }[] = [
@@ -35,6 +34,12 @@ export const recognition: { level: string; items: Award[] }[] = [
   {
     level: "College",
     items: [
+      {
+        title: "1st Runner-Up — Competitive Programming (Python)",
+        org: 'CpE Regional Challenge, "AutoMATHic," UP Civil Engineering Society',
+        year: "2026",
+        description: "A live, timed programming contest.",
+      },
       {
         title: "Top 10 Finalist",
         org: "MCIA CEB-i Hacks Hackathon",

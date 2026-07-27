@@ -7,7 +7,7 @@ import { experience } from "@/content/experience";
 import { education } from "@/content/education";
 import { groupA, groupB, groupMore } from "@/content/projects";
 import { skillTiers, currentlyLearning } from "@/content/skills";
-import { featured, recognition, credentials } from "@/content/awards";
+import { recognition, credentials } from "@/content/awards";
 
 export function buildKnowledgeContext(): string {
   const lines: string[] = [];
@@ -53,9 +53,6 @@ export function buildKnowledgeContext(): string {
   );
 
   lines.push("\n## Recognition & credentials");
-  lines.push(
-    `Flagship: ${featured.placement}, ${featured.subject} (${featured.year}) — ${featured.detail}. This was a live contest.`,
-  );
   for (const g of recognition) {
     if (g.items.length === 0) continue;
     lines.push(
