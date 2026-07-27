@@ -33,6 +33,7 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 import { skillTiers } from "@/content/skills";
+import Marquee from "@/components/motion/Marquee";
 
 const ICONS: Record<string, SimpleIcon> = {
   Python: siPython,
@@ -106,6 +107,18 @@ const CATEGORIES: Record<string, string[]> = {
 const TIER: Record<string, string> = {};
 skillTiers.forEach((t) => t.items.forEach((i) => (TIER[i] = t.name)));
 
+// Legend copy — the internal tier name "Working" is unclear on its own, so the
+// UI shows a plainer label and a one-line gloss of what each tier means.
+const LEGEND: { tier: string; label: string; desc: string }[] = [
+  { tier: "Working", label: "Proficient", desc: "built real features" },
+  { tier: "Familiar", label: "Familiar", desc: "used in a project" },
+  { tier: "Exposure", label: "Exposure", desc: "coursework / one project" },
+];
+
+// One masonry over every category packs into two balanced columns, so a short
+// category no longer leaves a tall gap beside a taller one.
+const CATEGORY_KEYS = Object.keys(CATEGORIES);
+
 // Skills that are practices/concepts rather than a tool with a logo.
 const CONCEPTS = skillTiers.flatMap((t) => t.items).filter((s) => !ICONS[s]);
 
@@ -116,13 +129,25 @@ function colorFor(hex: string): string {
 }
 
 function TierDot({ tier }: { tier?: string }) {
-  const cls =
-    tier === "Working"
-      ? "bg-fg"
-      : tier === "Familiar"
-        ? "bg-fg-muted"
-        : "border-[1.5px] border-fg-subtle";
-  return <span className={`block h-2 w-2 rounded-full ${cls}`} aria-hidden="true" />;
+  if (tier === "Working") {
+    return <span className="block h-2.5 w-2.5 rounded-full bg-fg" aria-hidden="true" />;
+  }
+  if (tier === "Familiar") {
+    // Half-filled "moon" — unmistakably between the solid and the ring.
+    return (
+      <span
+        className="block h-2.5 w-2.5 rounded-full border border-fg"
+        style={{ background: "linear-gradient(90deg, var(--fg) 50%, transparent 50%)" }}
+        aria-hidden="true"
+      />
+    );
+  }
+  return (
+    <span
+      className="block h-2.5 w-2.5 rounded-full border-[1.5px] border-fg-subtle"
+      aria-hidden="true"
+    />
+  );
 }
 
 function Tile({ name }: { name: string }) {
@@ -146,9 +171,11 @@ function Tile({ name }: { name: string }) {
   );
 }
 
-function Panel({ cat, tools }: { cat: string; tools: string[] }) {
+function Panel({ cat }: { cat: string }) {
+  const tools = (CATEGORIES[cat] ?? []).filter((i) => ICONS[i]);
+  if (tools.length === 0) return null;
   return (
-    <div className="flex flex-col">
+    <div className="mb-8 break-inside-avoid">
       <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
         {cat}
       </h3>
@@ -162,61 +189,57 @@ function Panel({ cat, tools }: { cat: string; tools: string[] }) {
 }
 
 export default function SkillsIcons() {
-  const panels = Object.entries(CATEGORIES)
-    .map(([cat, items]) => ({ cat, tools: items.filter((i) => ICONS[i]) }))
-    .filter((p) => p.tools.length > 0);
-
   return (
-    <div className="mx-auto max-w-6xl px-5 sm:px-8">
-      <div className="grid gap-x-10 gap-y-12 lg:grid-cols-2 lg:items-stretch">
-        {panels.map((p) => (
-          <Panel key={p.cat} cat={p.cat} tools={p.tools} />
-        ))}
+    <div>
+      {/* Practices & approaches — a full-width kinetic band leading into the
+          tools, prominent rather than trailing after them. */}
+      <div className="mb-14 border-y border-line py-7">
+        <p className="mx-auto mb-4 max-w-6xl px-5 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted sm:px-8">
+          Practices &amp; approaches
+        </p>
+        <Marquee seconds={46}>
+          {CONCEPTS.map((s) => (
+            <span
+              key={s}
+              className="flex items-center gap-8 font-display text-3xl font-light text-fg-muted sm:text-4xl"
+            >
+              {s}
+              <span className="text-xl text-seal/50" aria-hidden="true">
+                ·
+              </span>
+            </span>
+          ))}
+        </Marquee>
+      </div>
 
-        {/* Practices & approaches — a vertical marquee that stands beside the
-            tool tiles instead of trailing after them. */}
-        <div className="flex flex-col">
-          <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted">
-            Practices &amp; approaches
-          </h3>
-          <div
-            className="vmarquee group relative mt-4 h-[340px] overflow-hidden rounded-md border border-line bg-surface/40"
-            aria-hidden="true"
-          >
-            <div className="vmarquee-track flex flex-col gap-5 px-6 py-6">
-              {[...CONCEPTS, ...CONCEPTS].map((s, i) => (
-                <span
-                  key={i}
-                  className="font-display text-2xl font-light leading-none text-fg-muted"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        {/* Every category in one masonry — two balanced columns, no tall gaps. */}
+        <div className="gap-8 md:columns-2">
+          {CATEGORY_KEYS.map((cat) => (
+            <Panel key={cat} cat={cat} />
+          ))}
         </div>
-      </div>
 
-      {/* Legend for the proficiency dots */}
-      <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-fg-subtle">
-        <span className="flex items-center gap-2">
-          <TierDot tier="Working" /> Working
-        </span>
-        <span className="flex items-center gap-2">
-          <TierDot tier="Familiar" /> Familiar
-        </span>
-        <span className="flex items-center gap-2">
-          <TierDot tier="Exposure" /> Exposure
-        </span>
-      </div>
+        {/* Legend for the proficiency dots */}
+        <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-fg-subtle">
+          {LEGEND.map((l) => (
+            <span key={l.tier} className="flex items-center gap-2">
+              <TierDot tier={l.tier} /> {l.label}
+              <span className="tracking-normal text-fg-subtle/60 normal-case">
+                — {l.desc}
+              </span>
+            </span>
+          ))}
+        </div>
 
-      {/* Accessible fallback */}
-      <div className="sr-only">
-        {skillTiers.map((t) => (
-          <p key={t.name}>
-            {t.name}: {t.items.join(", ")}.
-          </p>
-        ))}
+        {/* Accessible fallback */}
+        <div className="sr-only">
+          {skillTiers.map((t) => (
+            <p key={t.name}>
+              {t.name}: {t.items.join(", ")}.
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
