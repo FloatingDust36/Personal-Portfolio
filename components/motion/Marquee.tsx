@@ -30,6 +30,7 @@ export default function Marquee({
       </div>
       <div
         aria-hidden="true"
+        inert
         className="flex shrink-0 items-center gap-10 pr-10 [animation:marquee_var(--dur)_linear_infinite] group-hover:[animation-play-state:paused]"
         style={{
           // @ts-expect-error CSS custom properties

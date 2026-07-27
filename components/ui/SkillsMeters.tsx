@@ -18,19 +18,18 @@ export default function SkillsMeters() {
     if (!root) return;
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const fills = gsap.utils.toArray<HTMLElement>("[data-fill]", root);
-      fills.forEach((f) => {
-        const level = Number(f.dataset.level ?? 0.5);
-        gsap.fromTo(
-          f,
-          { scaleX: 0 },
-          {
-            scaleX: level,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: { trigger: f, start: "top 92%", once: true },
-          },
-        );
+      // One ScrollTrigger per tier group (not per bar) to keep setup cheap.
+      const groups = gsap.utils.toArray<HTMLElement>("[data-tier-group]", root);
+      groups.forEach((group) => {
+        const fills = gsap.utils.toArray<HTMLElement>("[data-fill]", group);
+        gsap.set(fills, { scaleX: 0 });
+        gsap.to(fills, {
+          scaleX: (_i, t) => Number((t as HTMLElement).dataset.level ?? 0.5),
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.04,
+          scrollTrigger: { trigger: group, start: "top 88%", once: true },
+        });
       });
     });
     return () => mm.revert();
@@ -59,7 +58,7 @@ export default function SkillsMeters() {
                 {tier.blurb}
               </span>
             </div>
-            <div className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+            <div data-tier-group className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
               {tier.items.map((item) => (
                 <div key={item} className="flex items-center gap-4">
                   <span className="w-[46%] shrink-0 truncate text-sm text-fg-muted">

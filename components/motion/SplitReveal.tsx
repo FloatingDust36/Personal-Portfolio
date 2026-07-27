@@ -7,9 +7,9 @@ type SplitKind = "lines" | "words" | "chars" | "words,chars";
 
 /**
  * Kinetic text reveal: splits the element into lines/words/chars and slides each
- * up from behind a mask, staggered, as it scrolls into view. Splitting waits for
- * fonts so line breaks are correct. Under reduced motion the text simply renders
- * (no split, no animation).
+ * up from behind a mask, staggered, as it approaches view. Splitting is deferred
+ * until the element is near the viewport (and after fonts settle) so no SplitText
+ * work runs on initial load. Under reduced motion the text simply renders.
  */
 export default function SplitReveal({
   children,
@@ -19,7 +19,6 @@ export default function SplitReveal({
   stagger = 0.09,
   duration = 0.9,
   delay = 0,
-  start = "top 82%",
   y = 112,
 }: {
   children: ReactNode;
@@ -29,7 +28,6 @@ export default function SplitReveal({
   stagger?: number;
   duration?: number;
   delay?: number;
-  start?: string;
   y?: number;
 }) {
   const ref = useRef<HTMLElement | null>(null);
@@ -40,11 +38,11 @@ export default function SplitReveal({
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let split: SplitText | null = null;
-    let tween: gsap.core.Tween | null = null;
-    let cancelled = false;
+    let done = false;
 
     const run = () => {
-      if (cancelled || !el) return;
+      if (done || !el) return;
+      done = true;
       const maskType = type.includes("lines")
         ? "lines"
         : type.includes("chars")
@@ -53,27 +51,34 @@ export default function SplitReveal({
       split = new SplitText(el, { type, mask: maskType as "lines" | "words" | "chars" });
       const targets =
         maskType === "lines" ? split.lines : maskType === "chars" ? split.chars : split.words;
-      tween = gsap.from(targets, {
+      gsap.from(targets, {
         yPercent: y,
         opacity: 0,
         duration,
         delay,
         ease: "power3.out",
         stagger,
-        scrollTrigger: { trigger: el, start, once: true },
       });
     };
 
-    if (document.fonts?.ready) document.fonts.ready.then(run);
-    else run();
+    // Defer the split until the heading nears the viewport, after fonts settle.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          if (document.fonts?.ready) document.fonts.ready.then(run);
+          else run();
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    io.observe(el);
 
     return () => {
-      cancelled = true;
-      tween?.scrollTrigger?.kill();
-      tween?.kill();
+      io.disconnect();
       split?.revert();
     };
-  }, [type, stagger, duration, delay, start, y]);
+  }, [type, stagger, duration, delay, y]);
 
   return createElement(as, { ref, className }, children);
 }

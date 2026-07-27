@@ -85,10 +85,13 @@ export default function Awards() {
         </Reveal>
 
         {/* Remaining competitions */}
-        <ul className="divide-y divide-line border-b border-line">
-          {restCompetitions.map((c) => (
-            <Reveal key={c.title}>
-              <li className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-5">
+        <Reveal>
+          <ul className="divide-y divide-line border-b border-line">
+            {restCompetitions.map((c) => (
+              <li
+                key={c.title}
+                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-5"
+              >
                 <div className="max-w-2xl">
                   <p className="font-display text-xl font-light text-fg">{c.title}</p>
                   {c.detail && (
@@ -104,9 +107,9 @@ export default function Awards() {
                   </span>
                 )}
               </li>
-            </Reveal>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        </Reveal>
 
         <div className="mt-16 grid gap-14 lg:grid-cols-2 lg:gap-20">
           {/* Scholarship + academic */}

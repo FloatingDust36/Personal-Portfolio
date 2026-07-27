@@ -58,7 +58,7 @@ export default function Nav() {
         <button
           type="button"
           onClick={goTop}
-          aria-label={`${profile.shortName} — back to top`}
+          aria-label={`${profile.initials} — back to top`}
           className="grid h-9 w-9 place-items-center rounded-[3px] bg-seal font-display text-sm font-medium leading-none text-paper transition-opacity duration-500 ease-[var(--ease-settle)] hover:opacity-90"
         >
           {profile.initials}

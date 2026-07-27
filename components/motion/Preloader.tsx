@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { profile } from "@/content/profile";
-import MistTexture from "@/components/motion/MistTexture";
 
 const PANELS = 6;
 // Ink-splatter dots that burst when the seal stamps.
@@ -113,18 +112,7 @@ export default function Preloader() {
       {/* Peeling ink panels (the cover) */}
       <div className="absolute inset-0 flex">
         {Array.from({ length: PANELS }).map((_, i) => (
-          <div
-            key={i}
-            data-panel
-            className="relative h-full flex-1 overflow-hidden bg-bg"
-          >
-            <MistTexture
-              seed={i * 5 + 2}
-              frequency="0.012 0.02"
-              opacity={0.35}
-              className="absolute inset-0 h-full w-full"
-            />
-          </div>
+          <div key={i} data-panel className="h-full flex-1 bg-bg" />
         ))}
       </div>
 
@@ -156,7 +144,9 @@ export default function Preloader() {
           ))}
         </div>
 
-        <h1 className="font-display text-4xl font-light leading-[0.95] tracking-tight text-fg sm:text-6xl">
+        {/* Decorative (aria-hidden overlay) — not an h1, so the hero keeps the
+            page's single h1. */}
+        <div className="font-display text-4xl font-light leading-[0.95] tracking-tight text-fg sm:text-6xl">
           {["John Peter", "Pestaño"].map((line) => (
             <span key={line} className="block overflow-hidden pb-[0.08em]">
               <span data-line className="block">
@@ -164,7 +154,7 @@ export default function Preloader() {
               </span>
             </span>
           ))}
-        </h1>
+        </div>
       </div>
 
       {/* Counter */}

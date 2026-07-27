@@ -1,8 +1,11 @@
+import dynamic from "next/dynamic";
 import { skillTiers, currentlyLearning } from "@/content/skills";
 import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
-import SkillsConstellation from "@/components/ui/SkillsConstellation";
-import SkillsMeters from "@/components/ui/SkillsMeters";
+
+// Code-split so only the chosen variant ships to the browser.
+const SkillsConstellation = dynamic(() => import("@/components/ui/SkillsConstellation"));
+const SkillsMeters = dynamic(() => import("@/components/ui/SkillsMeters"));
 
 // Swap this to compare treatments: "constellation" | "meters".
 const VARIANT: "constellation" | "meters" = "meters";

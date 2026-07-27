@@ -1,6 +1,5 @@
 import Image from "next/image";
 import type { Project } from "@/content/projects";
-import MistTexture from "@/components/motion/MistTexture";
 
 /**
  * A large image-forward project panel for the horizontal gallery. Shows a real
@@ -32,17 +31,11 @@ export default function ProjectPanel({
           />
         ) : (
           <>
-            <MistTexture
-              seed={index + 3}
-              frequency="0.011 0.02"
-              opacity={0.5}
-              className="absolute inset-0 h-full w-full transition-transform duration-[1.2s] ease-[var(--ease-settle)] group-hover:scale-110"
-            />
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 transition-transform duration-[1.2s] ease-[var(--ease-settle)] group-hover:scale-105"
               style={{
                 background:
-                  "radial-gradient(120% 100% at 100% 100%, color-mix(in srgb, var(--fg) 10%, transparent), transparent 60%)",
+                  "radial-gradient(130% 110% at 82% 88%, color-mix(in srgb, var(--fg) 16%, transparent), transparent 58%), linear-gradient(140deg, color-mix(in srgb, var(--surface) 70%, transparent), transparent 70%)",
               }}
             />
             <span className="absolute bottom-2 right-6 font-display text-[7rem] leading-none text-fg/10 sm:text-[9rem]">

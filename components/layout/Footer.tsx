@@ -9,11 +9,10 @@ export default function Footer() {
       {/* Oversized name */}
       <div className="mx-auto max-w-6xl px-5 pt-20 sm:px-8">
         <SplitReveal
-          as="p"
+          as="h2"
           type="words"
           stagger={0.08}
           className="font-display font-light leading-[0.86] tracking-tight text-fg"
-          // clamp so it fills the width without overflowing
         >
           <span className="block text-[clamp(2.75rem,13vw,11rem)]">John Peter</span>
           <span className="block text-[clamp(2.75rem,13vw,11rem)]">Pestaño</span>
