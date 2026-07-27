@@ -152,7 +152,10 @@ function TierDot({ tier }: { tier?: string }) {
 function Item({ name }: { name: string }) {
   const icon = ICONS[name];
   return (
-    <span className="group inline-flex items-center gap-2">
+    <span className="group flex items-center gap-2.5">
+      {/* Dot leads so the proficiency markers line up in a column rather than
+          scattering after names of different lengths. */}
+      <TierDot tier={TIER[name]} />
       {icon && (
         <svg
           viewBox="0 0 24 24"
@@ -168,7 +171,6 @@ function Item({ name }: { name: string }) {
       <span className="text-sm text-fg-muted transition-colors duration-200 group-hover:text-fg">
         {name}
       </span>
-      <TierDot tier={TIER[name]} />
     </span>
   );
 }
@@ -183,7 +185,7 @@ function Row({ cat }: { cat: string }) {
       <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-fg-muted sm:pt-1">
         {cat}
       </h3>
-      <div className="flex flex-wrap gap-x-7 gap-y-4">
+      <div className="grid grid-cols-1 gap-x-8 gap-y-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((item) => (
           <Item key={item} name={item} />
         ))}
