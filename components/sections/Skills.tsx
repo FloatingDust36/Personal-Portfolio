@@ -13,7 +13,7 @@ const SkillsIcons = dynamic(() => import("@/components/ui/SkillsIcons"));
 const VARIANT: "icons" | "constellation" | "meters" | "marquee" = "icons";
 
 const HINT: Record<string, string> = {
-  icons: "What he works with, grouped by how deeply — honest, not inflated.",
+  icons: "Tools grouped by domain — the dot marks how deeply he's worked with each.",
   constellation: "A map of what he works with — hover a cluster to trace it.",
   meters: "Grouped by how deeply he's worked with each — honest, not inflated.",
   marquee: "What he works with, by depth — hover a row to pause it.",
@@ -46,6 +46,10 @@ export default function Skills() {
         <div className="mt-12">
           <SkillsMarquee />
         </div>
+      ) : VARIANT === "icons" ? (
+        <div className="mt-12">
+          <SkillsIcons />
+        </div>
       ) : (
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           {VARIANT === "constellation" ? (
@@ -54,10 +58,6 @@ export default function Skills() {
                 <SkillsConstellation />
               </div>
             </Reveal>
-          ) : VARIANT === "icons" ? (
-            <div className="mt-12">
-              <SkillsIcons />
-            </div>
           ) : (
             <div className="mt-12">
               <SkillsMeters />
