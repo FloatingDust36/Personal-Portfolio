@@ -2,12 +2,15 @@ import { skillTiers, currentlyLearning } from "@/content/skills";
 import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import SkillsConstellation from "@/components/ui/SkillsConstellation";
+import SkillsMeters from "@/components/ui/SkillsMeters";
 
-const LEGEND = [
-  { name: "Working", size: 12, blurb: "Built real features" },
-  { name: "Familiar", size: 9, blurb: "Used in a project" },
-  { name: "Exposure", size: 7, blurb: "Coursework / one project" },
-];
+// Swap this to compare treatments: "constellation" | "meters".
+const VARIANT: "constellation" | "meters" = "meters";
+
+const HINT: Record<string, string> = {
+  constellation: "A map of what he works with — hover a cluster to trace it.",
+  meters: "Grouped by how deeply he's worked with each — honest, not inflated.",
+};
 
 export default function Skills() {
   return (
@@ -27,40 +30,21 @@ export default function Skills() {
         </SplitReveal>
         <Reveal delay={0.1}>
           <p className="mt-6 max-w-xl font-mono text-[0.7rem] uppercase tracking-[0.2em] text-fg-subtle">
-            A map of what he works with — hover a cluster to trace it.
+            {HINT[VARIANT]}
           </p>
         </Reveal>
 
-        {/* Constellation */}
-        <Reveal delay={0.15}>
-          <div className="relative mt-8 h-[62vh] min-h-[440px] w-full">
-            <SkillsConstellation />
-          </div>
-        </Reveal>
-
-        {/* Legend + currently learning */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-line pt-6">
-          {LEGEND.map((l) => (
-            <div key={l.name} className="flex items-center gap-2.5">
-              <span
-                className="rounded-full bg-fg"
-                style={{ width: l.size, height: l.size }}
-              />
-              <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-fg-muted">
-                {l.name}
-              </span>
-              <span className="hidden text-xs text-fg-subtle sm:inline">
-                — {l.blurb}
-              </span>
+        {VARIANT === "constellation" ? (
+          <Reveal delay={0.15}>
+            <div className="relative mt-8 h-[62vh] min-h-[440px] w-full">
+              <SkillsConstellation />
             </div>
-          ))}
-          <div className="flex items-center gap-2.5">
-            <span className="h-2.5 w-2.5 rounded-full border border-dashed border-fg-subtle" />
-            <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-fg-subtle italic">
-              {currentlyLearning.label}: {currentlyLearning.items.join(", ")}
-            </span>
+          </Reveal>
+        ) : (
+          <div className="mt-12">
+            <SkillsMeters />
           </div>
-        </div>
+        )}
 
         {/* Accessible, crawlable fallback of the same content */}
         <div className="sr-only">
