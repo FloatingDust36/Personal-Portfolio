@@ -1,12 +1,19 @@
-// Awards — verified from BRIEF §6.6. Recognition is grouped by education level;
-// credentials by category. The competitive-programming placement is featured:
-// it is live-contest evidence of unassisted coding ability. Nothing invented —
-// high-school entries reflect selection into DepEd's advanced science tracks.
+// Awards — his actual medals/placements, NOT the education milestones (those
+// live in the About climb). Recognition is a tabbed set by level; each award
+// has room for a description and photos. Elementary and high-school lists are
+// intentionally ready to fill — John Peter has many to add. Nothing invented.
 
-export type Award = { title: string; detail?: string; year?: string };
+export type Award = {
+  title: string;
+  org?: string;
+  year?: string;
+  description?: string;
+  images?: string[]; // paths in /public/awards; a placeholder shows if empty
+};
+
 export type Cert = { name: string; issuer: string; url?: string; when?: string; done: boolean };
 
-// The flagship, called out on its own.
+// The flagship, called out above the tabs.
 export const featured = {
   placement: "1st Runner-Up",
   subject: "Competitive Programming (Python)",
@@ -16,44 +23,28 @@ export const featured = {
 
 export const recognition: { level: string; items: Award[] }[] = [
   {
+    // Add elementary medals/awards here — title, year, description, images.
     level: "Elementary",
-    items: [
-      {
-        title: "Valedictorian",
-        detail: "Graduated With High Honors · Lambusan Elementary School",
-      },
-    ],
+    items: [],
   },
   {
+    // Add high-school medals/awards here.
     level: "High School",
-    items: [
-      {
-        title: "STE Program · Junior High",
-        detail:
-          "Selected into a DepEd special curricular science and research program · San Remigio NHS",
-      },
-      {
-        title: "STEM Strand · Senior High",
-        detail: "Science, Technology, Engineering and Mathematics · San Remigio NHS",
-      },
-    ],
+    items: [],
   },
   {
     level: "College",
     items: [
-      { title: "Top 10 Finalist", detail: "MCIA CEB-i Hacks Hackathon", year: "2026" },
+      {
+        title: "Top 10 Finalist",
+        org: "MCIA CEB-i Hacks Hackathon",
+        year: "2026",
+      },
       {
         title: "Shortlisted Finalist — Top 28",
-        detail: 'IBPAP "Can You HackIT" Hackathon',
+        org: 'IBPAP "Can You HackIT" Hackathon',
         year: "2024",
       },
-      {
-        title: "DOST-SEI RA 7687 Scholar",
-        detail: "Competitive national science and technology undergraduate scholarship",
-        year: "2023",
-      },
-      { title: "Consistent Dean's List", detail: "Cebu Institute of Technology — University" },
-      { title: "On track for Magna Cum Laude", detail: "Based on current standing" },
     ],
   },
 ];

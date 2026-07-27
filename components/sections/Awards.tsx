@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { featured, recognition, credentials } from "@/content/awards";
+import { featured, credentials } from "@/content/awards";
 import { gsap } from "@/lib/gsap";
 import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
+import RecognitionTabs from "@/components/ui/RecognitionTabs";
 
 export default function Awards() {
   const rootRef = useRef<HTMLElement>(null);
@@ -73,47 +74,13 @@ export default function Awards() {
           </div>
         </Reveal>
 
-        {/* Recognition — by education level */}
+        {/* Recognition — tabbed by education level */}
         <Reveal>
           <h3 className="mt-20 font-mono text-xs uppercase tracking-[0.24em] text-fg-muted">
             Recognition
           </h3>
         </Reveal>
-        <div className="mt-8 grid gap-10 lg:grid-cols-3 lg:gap-12">
-          {recognition.map((group) => (
-            <Reveal key={group.level}>
-              <div>
-                <p className="border-b border-line pb-3 font-display text-xl font-light text-fg">
-                  {group.level}
-                </p>
-                <ul className="mt-5 space-y-6">
-                  {group.items.map((a) => (
-                    <li key={a.title}>
-                      <div className="flex items-baseline justify-between gap-3">
-                        <p className="font-mono text-[0.78rem] uppercase tracking-[0.1em] text-fg">
-                          {a.title}
-                        </p>
-                        {a.year && (
-                          <span
-                            data-scramble
-                            className="shrink-0 font-mono text-[0.7rem] tracking-[0.14em] text-fg-subtle"
-                          >
-                            {a.year}
-                          </span>
-                        )}
-                      </div>
-                      {a.detail && (
-                        <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">
-                          {a.detail}
-                        </p>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <RecognitionTabs />
 
         {/* Credentials — by category */}
         <Reveal>

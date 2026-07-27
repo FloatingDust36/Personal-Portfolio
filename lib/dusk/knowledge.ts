@@ -57,10 +57,14 @@ export function buildKnowledgeContext(): string {
     `Flagship: ${featured.placement}, ${featured.subject} (${featured.year}) — ${featured.detail}. This was a live contest.`,
   );
   for (const g of recognition) {
+    if (g.items.length === 0) continue;
     lines.push(
-      `${g.level}: ` +
+      `${g.level} awards: ` +
         g.items
-          .map((a) => `${a.title}${a.year ? ` (${a.year})` : ""}${a.detail ? ` — ${a.detail}` : ""}`)
+          .map(
+            (a) =>
+              `${a.title}${a.year ? ` (${a.year})` : ""}${a.org ? ` — ${a.org}` : ""}${a.description ? `. ${a.description}` : ""}`,
+          )
           .join("; "),
     );
   }
