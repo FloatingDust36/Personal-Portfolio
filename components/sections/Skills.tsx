@@ -6,13 +6,15 @@ import SplitReveal from "@/components/motion/SplitReveal";
 // Code-split so only the chosen variant ships to the browser.
 const SkillsConstellation = dynamic(() => import("@/components/ui/SkillsConstellation"));
 const SkillsMeters = dynamic(() => import("@/components/ui/SkillsMeters"));
+const SkillsMarquee = dynamic(() => import("@/components/ui/SkillsMarquee"));
 
-// Swap this to compare treatments: "constellation" | "meters".
-const VARIANT: "constellation" | "meters" = "meters";
+// Swap to compare treatments: "constellation" | "meters" | "marquee".
+const VARIANT: "constellation" | "meters" | "marquee" = "marquee";
 
 const HINT: Record<string, string> = {
   constellation: "A map of what he works with — hover a cluster to trace it.",
   meters: "Grouped by how deeply he's worked with each — honest, not inflated.",
+  marquee: "What he works with, by depth — hover a row to pause it.",
 };
 
 export default function Skills() {
@@ -36,30 +38,38 @@ export default function Skills() {
             {HINT[VARIANT]}
           </p>
         </Reveal>
+      </div>
 
-        {VARIANT === "constellation" ? (
-          <Reveal delay={0.15}>
-            <div className="relative mt-8 h-[62vh] min-h-[440px] w-full">
-              <SkillsConstellation />
-            </div>
-          </Reveal>
-        ) : (
-          <div className="mt-12">
-            <SkillsMeters />
-          </div>
-        )}
-
-        {/* Accessible, crawlable fallback of the same content */}
-        <div className="sr-only">
-          {skillTiers.map((t) => (
-            <p key={t.name}>
-              {t.name} ({t.blurb}): {t.items.join(", ")}.
-            </p>
-          ))}
-          <p>
-            {currentlyLearning.label}: {currentlyLearning.items.join(", ")}.
-          </p>
+      {VARIANT === "marquee" ? (
+        <div className="mt-12">
+          <SkillsMarquee />
         </div>
+      ) : (
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          {VARIANT === "constellation" ? (
+            <Reveal delay={0.15}>
+              <div className="relative mt-8 h-[62vh] min-h-[440px] w-full">
+                <SkillsConstellation />
+              </div>
+            </Reveal>
+          ) : (
+            <div className="mt-12">
+              <SkillsMeters />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Accessible, crawlable fallback of the same content */}
+      <div className="sr-only">
+        {skillTiers.map((t) => (
+          <p key={t.name}>
+            {t.name} ({t.blurb}): {t.items.join(", ")}.
+          </p>
+        ))}
+        <p>
+          {currentlyLearning.label}: {currentlyLearning.items.join(", ")}.
+        </p>
       </div>
     </section>
   );

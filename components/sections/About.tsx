@@ -91,19 +91,20 @@ export default function About() {
             </Reveal>
           </div>
 
-          {/* The trail */}
-          <div ref={listRef} className="relative pl-12 sm:pl-16">
-            {/* Ink trail — a gently brushed vertical line the nodes sit on */}
+          {/* The timeline. A two-column grid per row keeps the rail (trail +
+              node) cleanly separate from the text, aligned at 14px. */}
+          <div ref={listRef} className="relative">
+            {/* Ink trail — the drawn line the nodes sit on, centered at x=14 */}
             <svg
-              className="absolute inset-y-2 left-[10px] w-6 sm:left-[18px]"
-              viewBox="0 0 24 100"
+              className="absolute inset-y-3 left-[6px] w-4"
+              viewBox="0 0 16 100"
               preserveAspectRatio="none"
               fill="none"
               aria-hidden="true"
             >
               <path
                 ref={trailRef}
-                d="M12,0 C10.5,20 13.5,40 12,60 C10.5,78 13,90 12,100"
+                d="M8,0 C7,20 9,40 8,60 C7,78 9,90 8,100"
                 stroke="var(--fg-subtle)"
                 strokeWidth="1.4"
                 strokeLinecap="round"
@@ -118,40 +119,47 @@ export default function About() {
                   <li
                     key={`${m.place}-${i}`}
                     data-milestone
-                    className="relative pb-14 last:pb-0"
+                    className="grid grid-cols-[28px_1fr] gap-x-5 pb-14 last:pb-0 sm:gap-x-8"
                   >
-                    <span
-                      data-dot
-                      className={`absolute top-2 left-[22px] h-3 w-3 -translate-x-1/2 rounded-full ring-4 ring-bg sm:left-[30px] ${
-                        current ? "bg-seal" : "bg-fg"
-                      }`}
-                    />
-                    {m.period && (
+                    {/* Rail column */}
+                    <div className="relative">
+                      <span
+                        data-dot
+                        className={`absolute left-[14px] top-[9px] h-3 w-3 -translate-x-1/2 rounded-full ring-4 ring-bg ${
+                          current ? "bg-seal" : "bg-fg"
+                        }`}
+                      />
+                    </div>
+
+                    {/* Content column */}
+                    <div>
+                      {m.period && (
+                        <p
+                          data-rise
+                          data-year
+                          className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-fg-subtle"
+                        >
+                          {m.period}
+                        </p>
+                      )}
+                      <h3
+                        data-rise
+                        className="mt-1 font-display text-2xl font-light text-fg sm:text-3xl"
+                      >
+                        {m.credential}
+                      </h3>
                       <p
                         data-rise
-                        data-year
-                        className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-fg-subtle"
+                        className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-fg-subtle"
                       >
-                        {m.period}
+                        {m.place}
                       </p>
-                    )}
-                    <h3
-                      data-rise
-                      className="mt-1 font-display text-2xl font-light text-fg sm:text-3xl"
-                    >
-                      {m.credential}
-                    </h3>
-                    <p
-                      data-rise
-                      className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-fg-subtle"
-                    >
-                      {m.place}
-                    </p>
-                    {m.detail && (
-                      <p data-rise className="mt-3 max-w-md leading-relaxed text-fg-muted">
-                        {m.detail}
-                      </p>
-                    )}
+                      {m.detail && (
+                        <p data-rise className="mt-3 max-w-md leading-relaxed text-fg-muted">
+                          {m.detail}
+                        </p>
+                      )}
+                    </div>
                   </li>
                 );
               })}
